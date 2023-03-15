@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">GarbageCollector</string>
+    <string name="fab">fab</string>
+</resources>
