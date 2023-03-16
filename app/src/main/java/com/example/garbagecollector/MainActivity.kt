@@ -6,7 +6,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,7 +15,6 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView.background = null
         //Hide the middle button in the bottom app bar
         bottomNavigationView.menu.getItem(2).isEnabled = false
-
         //Connect Navigation Graph
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.navController
