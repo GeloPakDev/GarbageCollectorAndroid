@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
 import com.example.garbagecollector.R
+import com.example.garbagecollector.model.Location
 import com.example.garbagecollector.util.Constants
 import com.example.garbagecollector.viewmodel.HomeViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -23,9 +24,12 @@ import com.google.android.gms.maps.model.MarkerOptions
 class HomeFragment : Fragment(), OnMapReadyCallback {
     //To control and query the map
     private lateinit var googleMap: GoogleMap
+
+    //To get current User's location
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private val homeViewModel by viewModels<HomeViewModel>()
 
+    //Lifecycle methods
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -43,17 +47,19 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         setupLocationClient()
     }
 
+
+    //Initialization methods
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
-        initPlaces()
         //Get the User's location
         getCurrentLocation()
-//        googleMap.setOnMarkerClickListener {
-//            val intent = Intent(requireContext(), LocationDetailActivity::class.java)
-//            intent.putExtra("title", it.title)
-//            startActivity(intent)
-//            false
-//        }
+        createBookmarkObserver()
+
+        googleMap.setOnMarkerClickListener {
+            val detailLocationFragment = DetailLocationFragment(it)
+            detailLocationFragment.show(childFragmentManager, "TAG")
+            false
+        }
     }
 
     private fun setupLocationClient() {
@@ -61,6 +67,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             LocationServices.getFusedLocationProviderClient(requireActivity())
     }
 
+    //Location related methods
     private fun requestLocationPermissions() {
         ActivityCompat.requestPermissions(
             requireActivity(),
@@ -89,7 +96,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                     val update = CameraUpdateFactory.newLatLngZoom(latLng, 16.0f)
                     googleMap.moveCamera(update)
                 } else {
-                    Log.e(Constants.HOME_TAG, "No location found!")
+                    Log.e(Constants.HOME_FRAGMENT_TAG, "No location found!")
                 }
             }
         }
@@ -105,20 +112,26 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getCurrentLocation()
             } else {
-                Log.e(Constants.HOME_TAG, "Location permission denied")
+                Log.e(Constants.HOME_FRAGMENT_TAG, "Location permission denied")
             }
         }
     }
 
-    private fun initPlaces() {
-        val home = LatLng(41.21630723901391, 69.21264834550048)
-        val university = LatLng(41.25843942952858, 69.22009980929104)
-        val school = LatLng(41.22161667085518, 69.21318487920138)
-        val epam = LatLng(41.29657495340309, 69.27538979238629)
+    private fun displayAllMarkers(markers: List<Location>) {
+        //Locate all new markers on the map
+        markers.forEach {
+            val latLng = LatLng(it.latitude, it.longitude)
+            val marker = googleMap.addMarker(MarkerOptions().position(latLng))
+            marker?.tag = it
+        }
+    }
 
-        googleMap.addMarker(MarkerOptions().position(home))
-        googleMap.addMarker(MarkerOptions().position(university))
-        googleMap.addMarker(MarkerOptions().position(school))
-        googleMap.addMarker(MarkerOptions().position(epam))
+    private fun createBookmarkObserver() {
+        //Observe for the markers from the Repository
+        homeViewModel.getMarkers()?.observe(this) {
+            //Clear all existing markers from the map before retrieving new one
+            googleMap.clear()
+            displayAllMarkers(it)
+        }
     }
 }

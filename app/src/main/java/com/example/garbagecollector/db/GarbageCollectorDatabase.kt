@@ -1,13 +1,13 @@
 package com.example.garbagecollector.db
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.*
 import com.example.garbagecollector.model.Location
 import com.example.garbagecollector.util.Constants
+import com.example.garbagecollector.util.Converters
 
-@Database(entities = [Location::class], version = 1)
+@Database(entities = [Location::class], version = 5)
+@TypeConverters(Converters::class)
 abstract class GarbageCollectorDatabase : RoomDatabase() {
     abstract fun locationDao(): LocationDao
 
@@ -19,7 +19,7 @@ abstract class GarbageCollectorDatabase : RoomDatabase() {
                     context.applicationContext,
                     GarbageCollectorDatabase::class.java,
                     Constants.DATABASE_NAME
-                ).build()
+                ).fallbackToDestructiveMigration().build()
             }
             return instance as GarbageCollectorDatabase
         }
