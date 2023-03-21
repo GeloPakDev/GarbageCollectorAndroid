@@ -10,8 +10,13 @@ class LocationRepository(context: Context) {
     private val database = GarbageCollectorDatabase.getInstance(context)
     private val locationDao: LocationDao = database.locationDao()
 
+    val allLocations: LiveData<List<Location>>
+        get() {
+            return locationDao.findAll()
+        }
+
     fun addLocation(location: Location): Long {
-        val newId = locationDao.insertLocation(location)
+        val newId = locationDao.create(location)
         location.id = newId
         return newId
     }
@@ -19,9 +24,4 @@ class LocationRepository(context: Context) {
     fun createLocation(): Location {
         return Location()
     }
-
-    val allBookmarks: LiveData<List<Location>>
-        get() {
-            return locationDao.loadAll()
-        }
 }

@@ -9,20 +9,20 @@ import com.example.garbagecollector.model.Location
 @Dao
 interface LocationDao {
     @Query("SELECT * FROM Location")
-    fun loadAll(): LiveData<List<Location>>
+    fun findAll(): LiveData<List<Location>>
 
     @Query("SELECT * FROM Location WHERE id = :locationId")
-    fun loadLocation(locationId: Long): Location
+    fun findLocationById(locationId: Long): Location
 
     @Query("SELECT * FROM Location WHERE id = :locationId")
     fun loadLiveLocation(locationId: Long): LiveData<Location>
 
     @Insert(onConflict = IGNORE)
-    fun insertLocation(location: Location): Long
+    fun create(location: Location): Long
 
     @Update(onConflict = REPLACE)
-    fun updateLocation(location: Location)
+    fun update(location: Location)
 
     @Delete
-    fun deleteLocation(location: Location)
+    fun delete(location: Location)
 }
