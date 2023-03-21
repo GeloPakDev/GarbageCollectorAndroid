@@ -3,4 +3,5 @@
     <string name="fab">fab</string>
     <string name="ranking">Ranking</string>
     <string name="profile">Profile</string>
+    <string name="location">Location</string>
 </resources>
