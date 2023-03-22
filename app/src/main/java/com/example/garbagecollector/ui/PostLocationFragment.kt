@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.location.Address
 import android.location.Geocoder
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.viewModels
 import com.example.garbagecollector.databinding.BottomSheetBinding
 import com.example.garbagecollector.viewmodel.HomeViewModel
@@ -39,15 +41,17 @@ class PostLocationFragment(bitmap: Bitmap) : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = BottomSheetBinding.inflate(inflater)
-        binding.postGarbagePhoto.setImageBitmap(garbagePhoto)
+        binding.detailGarbagePhoto.setImageBitmap(garbagePhoto)
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getCurrentGarbageLocation()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingPermission", "SetTextI18n")
     private fun getCurrentGarbageLocation() {
         fusedLocationProviderClient.lastLocation.addOnCompleteListener {
@@ -59,21 +63,25 @@ class PostLocationFragment(bitmap: Bitmap) : BottomSheetDialogFragment() {
             //Get Address
             val address = addresses?.get(0)
             //Get Data from Address
-            address!!.getAddressLine(0)
-            val city: String = address.locality
-            val postalCode: String = address.postalCode
-            val featureName: String = address.featureName
-
+            address?.getAddressLine(0)
+            val city: String = address?.locality ?: ""
+            val postalCode: String = address?.postalCode ?: ""
+            val featureName: String = address?.featureName ?: ""
             if (location != null) {
                 val latLng = LatLng(location.latitude, location.longitude)
                 binding.locationEditText.setText("$featureName, $city $postalCode")
                 binding.postButton.setOnClickListener {
-                    saveLocation(latLng, address, garbagePhoto)
+                    if (address != null) {
+                        saveLocation(latLng, address, garbagePhoto)
+                    } else {
+                        binding.locationEditText.setText("Type in your location!")
+                    }
                 }
             }
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun saveLocation(location: LatLng, address: Address, garbagePhoto: Bitmap) {
         GlobalScope.launch {
             homeViewModel.addLocation(location, address, garbagePhoto)
