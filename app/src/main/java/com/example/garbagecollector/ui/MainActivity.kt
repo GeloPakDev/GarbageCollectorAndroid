@@ -4,17 +4,27 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.garbagecollector.R
 import com.example.garbagecollector.databinding.ActivityMainBinding
 import com.example.garbagecollector.util.Constants
-import com.example.garbagecollector.util.Constants.Companion.REQUEST_CAMERA
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    //As soon as the photo has taken open PostLocationFragment
+    private val startForResult: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it != null && it.resultCode == RESULT_OK) {
+                val bitmap = it.data?.extras?.get(Constants.GARBAGE_IMAGE_INTENT) as Bitmap
+                val bottomSheet = PostLocationFragment(bitmap)
+                bottomSheet.show(supportFragmentManager, "TAG")
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,21 +40,10 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.navController
         bottomNavigationView.setupWithNavController(navController)
-
         //Open Camera
         binding.camera.setOnClickListener {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(intent, REQUEST_CAMERA)
-        }
-    }
-
-    //As soon as the photo has taken open PostLocationFragment
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CAMERA && resultCode == RESULT_OK) {
-            val bitmap = data?.extras?.get(Constants.GARBAGE_IMAGE_INTENT) as Bitmap
-            val bottomSheet = PostLocationFragment(bitmap)
-            bottomSheet.show(supportFragmentManager, "TAG")
+            startForResult.launch(intent)
         }
     }
 }

@@ -48,7 +48,7 @@ class PostLocationFragment(bitmap: Bitmap) : BottomSheetDialogFragment() {
         getCurrentGarbageLocation()
     }
 
-    @SuppressLint("MissingPermission")
+    @SuppressLint("MissingPermission", "SetTextI18n")
     private fun getCurrentGarbageLocation() {
         fusedLocationProviderClient.lastLocation.addOnCompleteListener {
             //Get Location object

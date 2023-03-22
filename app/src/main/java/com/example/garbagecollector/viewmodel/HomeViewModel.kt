@@ -36,16 +36,4 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
         return locations
     }
-
-//    private fun mapLocationsToMarkerOptions() {
-//        //Get Location Objects from the Repository and convert them to MarkerOptions
-//        locations = locationRepository.allLocations.map { repoBookmarks ->
-//            repoBookmarks.map { bookmark -> locationToMarker(bookmark) }
-//        }
-//    }
-//
-//    private fun locationToMarker(location: Location): MarkerOptions {
-//        val latLng = LatLng(location.latitude, location.longitude)
-//        return MarkerOptions().position(latLng)
-//    }
 }

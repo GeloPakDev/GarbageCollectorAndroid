@@ -23,7 +23,7 @@ class DetailLocationFragment(private val marker: Marker) : BottomSheetDialogFrag
     ): View? {
         binding = DetailLocationBinding.inflate(inflater)
 
-        val location: Location = marker.tag as Location
+        val location = marker.tag as Location
         binding.postGarbagePhoto.setImageBitmap(location.photo)
         binding.locationDetailAddress.text = "${location.name}, ${location.city}"
         binding.locationDetailLatlng.text = "${location.latitude}, ${location.longitude}"
