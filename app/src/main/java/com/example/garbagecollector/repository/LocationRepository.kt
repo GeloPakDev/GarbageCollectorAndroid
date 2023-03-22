@@ -12,13 +12,17 @@ class LocationRepository(context: Context) {
 
     val allLocations: LiveData<List<Location>>
         get() {
-            return locationDao.findAll()
+            return locationDao.findAllNewLocations()
         }
 
     fun addLocation(location: Location): Long {
         val newId = locationDao.create(location)
         location.id = newId
         return newId
+    }
+
+    fun updateLocationStatus(locationId: Long) {
+        locationDao.updateLocationState(locationId)
     }
 
     fun createLocation(): Location {
