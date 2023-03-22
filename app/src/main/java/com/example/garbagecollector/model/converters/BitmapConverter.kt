@@ -1,11 +1,11 @@
-package com.example.garbagecollector.util
+package com.example.garbagecollector.model.converters
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.room.TypeConverter
 import java.io.ByteArrayOutputStream
 
-class Converters {
+class BitmapConverter {
     @TypeConverter
     fun fromBitmap(bitmap: Bitmap): ByteArray {
         val outputStream = ByteArrayOutputStream()
