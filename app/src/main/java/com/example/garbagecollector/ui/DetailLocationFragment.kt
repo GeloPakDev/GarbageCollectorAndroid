@@ -1,10 +1,14 @@
 package com.example.garbagecollector.ui
 
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.viewModels
 import com.example.garbagecollector.databinding.DetailLocationBinding
 import com.example.garbagecollector.model.Location
@@ -38,6 +42,9 @@ class DetailLocationFragment(private val marker: Marker) : BottomSheetDialogFrag
         binding.claim.setOnClickListener {
             location.id?.let { claimLocation(it) }
         }
+        binding.copy.setOnClickListener {
+            copyToClipboard(binding.locationDetailLatlng)
+        }
 
         return binding.root
     }
@@ -47,5 +54,12 @@ class DetailLocationFragment(private val marker: Marker) : BottomSheetDialogFrag
             homeViewModel.claimLocation(locationId)
             dismiss()
         }
+    }
+
+    private fun copyToClipboard(textView: TextView) {
+        val clipboard: ClipboardManager =
+            context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val data = ClipData.newPlainText("EditText", textView.text)
+        clipboard.setPrimaryClip(data)
     }
 }
