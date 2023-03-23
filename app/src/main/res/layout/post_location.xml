@@ -83,12 +83,19 @@
         app:layout_constraintTop_toTopOf="@id/location_text"
         app:srcCompat="@drawable/location" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/post_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:background="@drawable/rounded_corner"
+        android:fontFamily="@font/poppinsregular"
         android:text="@string/post"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/location_text" />
