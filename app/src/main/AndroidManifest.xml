@@ -16,6 +16,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GarbageCollector"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.MyGarbageActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -26,6 +33,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
