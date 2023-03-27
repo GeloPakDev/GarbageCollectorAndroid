@@ -51,7 +51,7 @@
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/location_text"
+        android:id="@+id/first_name"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -77,10 +77,10 @@
         android:id="@+id/current_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/location_text"
+        app:layout_constraintBottom_toBottomOf="@id/first_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/location_text"
-        app:layout_constraintTop_toTopOf="@id/location_text"
+        app:layout_constraintStart_toEndOf="@id/first_name"
+        app:layout_constraintTop_toTopOf="@id/first_name"
         app:srcCompat="@drawable/location" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -98,7 +98,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/location_text" />
+        app:layout_constraintTop_toBottomOf="@+id/first_name" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

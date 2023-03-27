@@ -11,7 +11,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.viewModels
 import com.example.garbagecollector.databinding.DetailLocationBinding
-import com.example.garbagecollector.model.Location
+import com.example.garbagecollector.db.model.Location
+import com.example.garbagecollector.util.Constants
 import com.example.garbagecollector.util.DateFormatter
 import com.example.garbagecollector.viewmodel.HomeViewModel
 import com.google.android.gms.maps.model.Marker
@@ -59,7 +60,7 @@ class DetailLocationFragment(private val marker: Marker) : BottomSheetDialogFrag
     private fun copyToClipboard(textView: TextView) {
         val clipboard: ClipboardManager =
             context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val data = ClipData.newPlainText("EditText", textView.text)
+        val data = ClipData.newPlainText(Constants.LOCATION, textView.text)
         clipboard.setPrimaryClip(data)
     }
 }

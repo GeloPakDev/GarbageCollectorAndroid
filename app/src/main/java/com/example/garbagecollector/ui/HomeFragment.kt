@@ -13,7 +13,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.garbagecollector.R
-import com.example.garbagecollector.model.Location
+import com.example.garbagecollector.db.model.Location
 import com.example.garbagecollector.util.Constants
 import com.example.garbagecollector.viewmodel.HomeViewModel
 import com.google.android.gms.location.FusedLocationProviderClient

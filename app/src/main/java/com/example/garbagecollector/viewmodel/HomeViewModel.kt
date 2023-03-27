@@ -8,7 +8,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import com.example.garbagecollector.model.Location
+import com.example.garbagecollector.db.model.Location
 import com.example.garbagecollector.repository.LocationRepository
 import com.example.garbagecollector.util.Constants
 import com.google.android.gms.maps.model.LatLng
@@ -22,9 +22,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     @RequiresApi(Build.VERSION_CODES.O)
     fun addLocation(latLng: LatLng, address: Address, garbagePhoto: Bitmap) {
         val location = locationRepository.createLocation()
-        location.name = address.featureName
-        location.city = address.locality
-        location.postalCode = address.postalCode.toInt()
+        location.name = address.featureName ?: ""
+        location.city = address.locality ?: ""
+        location.postalCode = address.postalCode?.toInt() ?: 0
         location.longitude = latLng.longitude
         location.latitude = latLng.latitude
         location.photo = garbagePhoto

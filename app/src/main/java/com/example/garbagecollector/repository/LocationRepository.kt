@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import com.example.garbagecollector.db.GarbageCollectorDatabase
 import com.example.garbagecollector.db.LocationDao
-import com.example.garbagecollector.model.Location
+import com.example.garbagecollector.db.model.Location
 
 class LocationRepository(context: Context) {
     private val database = GarbageCollectorDatabase.getInstance(context)

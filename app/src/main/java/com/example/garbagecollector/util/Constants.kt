@@ -8,5 +8,6 @@ class Constants {
         const val HOME_VIEW_MODEL_TAG = "HomeViewModel"
         const val GARBAGE_IMAGE_INTENT = "data"
         const val REQUEST_CAMERA = 100
+        const val LOCATION = "LatLng"
     }
 }

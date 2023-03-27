@@ -3,7 +3,7 @@ package com.example.garbagecollector.db
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.room.OnConflictStrategy.Companion.IGNORE
-import com.example.garbagecollector.model.Location
+import com.example.garbagecollector.db.model.Location
 
 @Dao
 interface LocationDao {

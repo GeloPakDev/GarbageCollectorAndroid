@@ -62,9 +62,10 @@ class PostLocationFragment(bitmap: Bitmap) : BottomSheetDialogFragment() {
         fusedLocationProviderClient.lastLocation.addOnCompleteListener {
             //Get Location object
             val location = it.result
-            //using Rx Java
             getAddress(location)
+                //Delegate the computational work on separate thread
                 .subscribeOn(Schedulers.newThread())
+                //Get result back on main thread
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ address ->
                     address.getAddressLine(0)
