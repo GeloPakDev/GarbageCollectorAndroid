@@ -1,4 +1,4 @@
-package com.example.garbagecollector.model
+package com.example.garbagecollector.db.model
 
 import android.graphics.Bitmap
 import androidx.room.Entity
@@ -15,5 +15,8 @@ data class Location(
     var longitude: Double = 0.0,
     var photo: Bitmap? = null,
     var state: State = State.NEW,
-    var createDate: LocalDate? = null
+    var createDate: LocalDate? = null,
+    var claimDate: LocalDate? = null,
+    var postedUser: Long? = null,
+    var claimedUser: Long? = null
 )

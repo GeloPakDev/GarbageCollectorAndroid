@@ -1,4 +1,4 @@
-package com.example.garbagecollector.model.converters
+package com.example.garbagecollector.db.model.converters
 
 import android.os.Build
 import androidx.annotation.RequiresApi

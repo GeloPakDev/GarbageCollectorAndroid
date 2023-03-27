@@ -1,7 +1,7 @@
-package com.example.garbagecollector.model.converters
+package com.example.garbagecollector.db.model.converters
 
 import androidx.room.TypeConverter
-import com.example.garbagecollector.model.State
+import com.example.garbagecollector.db.model.State
 
 class StateConverter {
     @TypeConverter
