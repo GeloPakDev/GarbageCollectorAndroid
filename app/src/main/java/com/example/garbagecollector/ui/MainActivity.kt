@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView.menu.getItem(2).isEnabled = false
         //Connect Navigation Graph
         val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
         bottomNavigationView.setupWithNavController(navController)
         //Open Camera
