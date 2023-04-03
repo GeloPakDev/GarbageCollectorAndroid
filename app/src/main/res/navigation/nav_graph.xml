@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/homeFragment">
-
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.garbagecollector.ui.HomeFragment"
@@ -25,4 +24,10 @@
         android:name="com.example.garbagecollector.ui.ProfileFragment"
         android:label="profile_fragment"
         tools:layout="@layout/profile" />
+    <fragment
+        android:id="@+id/notSignedInFragment"
+        android:name="com.example.garbagecollector.ui.NotSignedInFragment"
+        android:label="NotSignedInFragment"
+        tools:layout="@layout/not_signed_in">
+    </fragment>
 </navigation>

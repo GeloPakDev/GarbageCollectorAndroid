@@ -33,5 +33,4 @@ class PostedGarbageFragment : Fragment() {
 
         return binding.root
     }
-
 }
