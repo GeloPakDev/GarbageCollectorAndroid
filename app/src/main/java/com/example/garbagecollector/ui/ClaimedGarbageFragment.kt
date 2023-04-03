@@ -29,7 +29,6 @@ class ClaimedGarbageFragment : Fragment() {
             val claimedGarbageListAdapter = ClaimedGarbageListAdapter(it)
             recyclerView.adapter = claimedGarbageListAdapter
         }
-
         return binding.root
     }
 }

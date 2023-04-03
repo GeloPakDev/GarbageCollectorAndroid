@@ -4,18 +4,16 @@ import android.content.Context
 import androidx.room.*
 import com.example.garbagecollector.db.model.Location
 import com.example.garbagecollector.db.model.User
+import com.example.garbagecollector.db.model.converters.*
 import com.example.garbagecollector.util.Constants
-import com.example.garbagecollector.db.model.converters.BitmapConverter
-import com.example.garbagecollector.db.model.converters.LocalDateConverter
-import com.example.garbagecollector.db.model.converters.RankConverter
-import com.example.garbagecollector.db.model.converters.StateConverter
 
-@Database(entities = [Location::class, User::class], version = 9)
+@Database(entities = [Location::class, User::class], version = 10)
 @TypeConverters(
     BitmapConverter::class,
     LocalDateConverter::class,
     StateConverter::class,
-    RankConverter::class
+    RankConverter::class,
+    RoleConverter::class
 )
 abstract class GarbageCollectorDatabase : RoomDatabase() {
     abstract fun locationDao(): LocationDao
