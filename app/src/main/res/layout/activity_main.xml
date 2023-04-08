@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:fabCradleMargin="10dp"
+        app:fabCradleRoundedCornerRadius="10dp"
         app:fabCradleVerticalOffset="10dp">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -21,6 +21,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_marginEnd="16dp"
+            android:background="@android:color/transparent"
+            app:itemIconTint="@color/black"
             app:labelVisibilityMode="unlabeled"
             app:menu="@menu/bottom_menu" />
     </com.google.android.material.bottomappbar.BottomAppBar>
@@ -32,7 +34,7 @@
         android:contentDescription="@string/fab"
         android:elevation="0dp"
         android:src="@drawable/camera"
-        app:backgroundTint="@color/black"
+        app:backgroundTint="@color/app_green"
         app:layout_anchor="@id/bottomAppBar"
         app:tint="@android:color/white" />
 

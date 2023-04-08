@@ -5,26 +5,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView"
+    <ImageView
+        android:id="@+id/notSignedInImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-
-        android:text="You are not signed in!"
-        app:layout_constraintBottom_toTopOf="@+id/sign_in"
+        android:src="@drawable/not_signed_in"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/sign_in"
+    <TextView
+        android:id="@+id/not_sign_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/textView"
-        app:layout_constraintStart_toStartOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        android:layout_marginTop="30sp"
+        android:fontFamily="@font/poppinsregular"
+        android:text="You are not logged in. Sign In"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/notSignedInImage"
+        app:layout_constraintStart_toStartOf="@+id/notSignedInImage"
+        app:layout_constraintTop_toBottomOf="@+id/notSignedInImage" />
 </androidx.constraintlayout.widget.ConstraintLayout>
