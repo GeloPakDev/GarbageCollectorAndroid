@@ -14,5 +14,5 @@ interface LocationDao {
     fun create(location: Location): Long
 
     @Query("UPDATE Location SET state = 'CLAIMED' WHERE id = :locationId")
-    fun updateLocationState(locationId: Long)
+    suspend fun updateLocationState(locationId: Long)
 }

@@ -20,11 +20,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private var locations: LiveData<List<Location>>? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun addLocation(latLng: LatLng, address: Address, garbagePhoto: Bitmap) {
+    suspend fun addLocation(latLng: LatLng, address: Address?, garbagePhoto: Bitmap) {
         val location = locationRepository.createLocation()
-        location.name = address.featureName ?: ""
-        location.city = address.locality ?: ""
-        location.postalCode = address.postalCode?.toInt() ?: 0
+        location.name = address?.featureName ?: ""
+        location.city = address?.locality ?: ""
+        location.postalCode = address?.postalCode?.toInt() ?: 0
         location.longitude = latLng.longitude
         location.latitude = latLng.latitude
         location.photo = garbagePhoto
@@ -34,7 +34,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         Log.i(Constants.HOME_VIEW_MODEL_TAG, "New location $newId added to the database.")
     }
 
-    fun claimLocation(locationId: Long) {
+    suspend fun claimLocation(locationId: Long) {
         locationRepository.updateLocationStatus(locationId)
     }
 

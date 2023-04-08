@@ -7,7 +7,7 @@ import com.example.garbagecollector.db.model.User
 import com.example.garbagecollector.db.model.converters.*
 import com.example.garbagecollector.util.Constants
 
-@Database(entities = [Location::class, User::class], version = 10)
+@Database(entities = [Location::class, User::class], version = 13)
 @TypeConverters(
     BitmapConverter::class,
     LocalDateConverter::class,

@@ -21,7 +21,7 @@ class LocationRepository(context: Context) {
         return newId
     }
 
-    fun updateLocationStatus(locationId: Long) {
+    suspend fun updateLocationStatus(locationId: Long) {
         locationDao.updateLocationState(locationId)
     }
 

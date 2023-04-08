@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.garbagecollector.databinding.DetailLocationBinding
 import com.example.garbagecollector.db.model.Location
 import com.example.garbagecollector.util.Constants
@@ -17,7 +18,7 @@ import com.example.garbagecollector.util.DateFormatter
 import com.example.garbagecollector.viewmodel.HomeViewModel
 import com.google.android.gms.maps.model.Marker
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -51,7 +52,7 @@ class DetailLocationFragment(private val marker: Marker) : BottomSheetDialogFrag
     }
 
     private fun claimLocation(locationId: Long) {
-        GlobalScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             homeViewModel.claimLocation(locationId)
             dismiss()
         }
