@@ -12,7 +12,7 @@ data class User(
     var firstName: String? = "",
     var lastName: String? = "",
     var city: String? = "",
-    var district: Int? = 0,
+    var district: String? = "",
     var photo: Bitmap? = null,
     var points: Long = 0,
     var ranking: Rank = Rank.NEW,
