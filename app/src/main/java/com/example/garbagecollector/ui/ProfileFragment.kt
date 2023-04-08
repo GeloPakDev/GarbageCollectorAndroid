@@ -1,5 +1,6 @@
 package com.example.garbagecollector.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,10 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.garbagecollector.R
 import com.example.garbagecollector.databinding.ProfileBinding
 import com.example.garbagecollector.viewmodel.ProfileViewModel
+import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
 
@@ -24,18 +27,29 @@ class ProfileFragment : Fragment() {
     private val profileViewModel by viewModels<ProfileViewModel>()
 
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         //Check if user signed in already
-        profileViewModel.token.observe(viewLifecycleOwner) {
-            if (it == "") {
+        profileViewModel.token.observe(viewLifecycleOwner) { token ->
+            //If token is empty user is not signed in or registered yet
+            if (token.isEmpty()) {
                 findNavController().navigate(R.id.notSignedInFragment)
+            } else {
+                //Get the email from the DataStore and find user by email
+                profileViewModel.email.observe(viewLifecycleOwner) { email ->
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        val user = profileViewModel.findUserByEmail(email)
+                        binding.fullName.text = "${user.data?.firstName} ${user.data?.lastName}"
+                    }
+                }
             }
         }
 
         binding = ProfileBinding.inflate(inflater)
+
         //ListView setup
         val commonListView = binding.commonListView
         val additionalListView = binding.additionalListView
@@ -54,6 +68,7 @@ class ProfileFragment : Fragment() {
 
         binding.signOut.setOnClickListener {
             profileViewModel.signOut()
+            findNavController().navigate(R.id.homeFragment)
         }
         return binding.root
 

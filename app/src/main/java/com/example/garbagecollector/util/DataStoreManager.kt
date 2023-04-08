@@ -28,7 +28,7 @@ class DataStoreManager(private val context: Context) {
         preferences[USER_EMAIL] ?: ""
     }
 
-    suspend fun saveUserToken(loginJWTDto: LoginJWTDto) {
+    suspend fun saveUserCredentials(loginJWTDto: LoginJWTDto) {
         context.dataStore.edit { preferences ->
             preferences[AUTH_TOKEN] = loginJWTDto.token.toString()
             preferences[USER_EMAIL] = loginJWTDto.email.toString()

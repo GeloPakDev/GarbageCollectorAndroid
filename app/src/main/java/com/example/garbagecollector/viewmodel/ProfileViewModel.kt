@@ -3,14 +3,20 @@ package com.example.garbagecollector.viewmodel
 import android.app.Application
 import androidx.lifecycle.*
 import com.example.garbagecollector.api.RetrofitInstance
+import com.example.garbagecollector.api.UserApi
 import com.example.garbagecollector.api.dto.LoginDto
 import com.example.garbagecollector.api.dto.LoginJWTDto
 import com.example.garbagecollector.api.dto.RegistrationDto
+import com.example.garbagecollector.api.dto.UserDto
 
-import com.example.garbagecollector.db.model.User
 import com.example.garbagecollector.util.DataStoreManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -18,47 +24,56 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     val token = repository.userTokenFlow.asLiveData()
     val email = repository.userEmail.asLiveData()
 
-    private val _user: MutableLiveData<User?> = MutableLiveData()
-    val user: LiveData<User?>
-        get() = _user
-
 
     fun registerUser(registrationDto: RegistrationDto) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             //Send request to register the user
-            val fetchedUser = RetrofitInstance.api.registerUser(registrationDto)
-            //Save registered user's data
-            _user.value = fetchedUser
+            RetrofitInstance.api.registerUser(registrationDto)
         }
     }
 
     fun loginUser(loginDto: LoginDto) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             //Send request to sign in user and retrieve JWT token and email
             val loginJWTDto = RetrofitInstance.api.loginUser(loginDto)
             //Save JWT token to the Local DataStore to make subsequent requests
-            saveToDataStore(loginJWTDto)
+            saveCredentialsToDataStore(loginJWTDto)
         }
     }
 
-    fun findUserByEmail(email: String) {
-        viewModelScope.launch {
+    suspend fun findUserByEmail(email: String): UserDto =
+        withContext(Dispatchers.IO) {
+            val client = OkHttpClient.Builder()
+                .addInterceptor { chain ->
+                    chain.proceed(chain.request().newBuilder().also {
+                        it.addHeader("Authorization", "Bearer ${token.value}")
+                    }.build())
+                }.also { client ->
+                    val logging =
+                        HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+                    client.addInterceptor(logging)
+                }.build()
+
+            val retrofit = Retrofit.Builder()
+                .baseUrl("https://garbagecollectorapp.azurewebsites.net/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build()
+                .create(UserApi::class.java)
             //Send request to find out user by email
-            val fetchedUser = RetrofitInstance.api.getUserByEmail(email)
-            //Save signed in user data
-            _user.value = fetchedUser
+            retrofit.getUserByEmail(email)
         }
-    }
 
-    private fun saveToDataStore(loginJWTDto: LoginJWTDto) {
+
+    private fun saveCredentialsToDataStore(loginJWTDto: LoginJWTDto) {
         viewModelScope.launch(Dispatchers.IO) {
             //Saves JWT token and email to the database
-            repository.saveUserToken(loginJWTDto)
+            repository.saveUserCredentials(loginJWTDto)
         }
     }
 
     fun signOut() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.clearUserCredentials()
         }
     }

@@ -7,23 +7,23 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.example.garbagecollector.R
 import com.example.garbagecollector.databinding.PostLocationBinding
 import com.example.garbagecollector.viewmodel.HomeViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
 
 
@@ -46,6 +46,8 @@ class PostLocationFragment(bitmap: Bitmap) : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = PostLocationBinding.inflate(inflater)
+        //If user open camera from different fragment navigate him to the homeFragment
+        findNavController().navigate(R.id.homeFragment)
         binding.detailGarbagePhoto.setImageBitmap(garbagePhoto)
         return binding.root
     }
@@ -62,49 +64,38 @@ class PostLocationFragment(bitmap: Bitmap) : BottomSheetDialogFragment() {
         fusedLocationProviderClient.lastLocation.addOnCompleteListener {
             //Get Location object
             val location = it.result
-            getAddress(location)
-                //Delegate the computational work on separate thread
-                .subscribeOn(Schedulers.newThread())
-                //Get result back on main thread
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ address ->
-                    address.getAddressLine(0)
-                    val city: String = address.locality ?: ""
-                    val postalCode: String = address.postalCode ?: ""
-                    val featureName: String = address.featureName ?: ""
-                    if (location != null) {
-                        val latLng = LatLng(location.latitude, location.longitude)
-                        binding.locationEditText.setText("$featureName, $city $postalCode")
-                        binding.postButton.setOnClickListener {
-                            saveLocation(latLng, address, garbagePhoto)
-                        }
-                    }
-                },
-                    {
-                        Log.e("PostLocationFragment", it.message.toString())
-                    }
-                )
-        }
-    }
+            viewLifecycleOwner.lifecycleScope.launch {
+                val address = getAddress(location)
 
+                address?.getAddressLine(0)
 
-    private fun getAddress(location: Location?): Single<Address> {
-        val geocoder = Geocoder(requireContext(), Locale.getDefault())
-        val addresses =
-            location?.let { geocoder.getFromLocation(it.latitude, location.longitude, 1) }
-        //Get Address
-        val address = addresses?.get(0)
-        return Single.create { subscriber ->
-            if (address != null) {
-                subscriber.onSuccess(address)
+                val city: String = address?.locality ?: ""
+                val postalCode: String = address?.postalCode ?: ""
+                val featureName: String = address?.featureName ?: ""
+                if (location != null) {
+                    val latLng = LatLng(location.latitude, location.longitude)
+                    binding.locationEditText.setText("$featureName, $city $postalCode")
+                    binding.postButton.setOnClickListener {
+                        saveLocation(latLng, address, garbagePhoto)
+                    }
+                }
             }
         }
     }
 
 
+    private suspend fun getAddress(location: Location?): Address? =
+        withContext(Dispatchers.IO) {
+            val geocoder = Geocoder(requireContext(), Locale.getDefault())
+            val addresses =
+                location?.let { geocoder.getFromLocation(it.latitude, location.longitude, 1) }
+            //Get Address
+            addresses?.get(0)
+        }
+
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun saveLocation(location: LatLng, address: Address, garbagePhoto: Bitmap) {
-        GlobalScope.launch {
+    private fun saveLocation(location: LatLng, address: Address?, garbagePhoto: Bitmap) {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             homeViewModel.addLocation(location, address, garbagePhoto)
             dismiss()
         }
