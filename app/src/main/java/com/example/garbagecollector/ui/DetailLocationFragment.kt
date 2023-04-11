@@ -4,15 +4,17 @@ import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.example.garbagecollector.api.dto.LocationDto
 import com.example.garbagecollector.databinding.DetailLocationBinding
-import com.example.garbagecollector.db.model.Location
 import com.example.garbagecollector.util.Constants
 import com.example.garbagecollector.util.DateFormatter
 import com.example.garbagecollector.viewmodel.HomeViewModel
@@ -36,11 +38,16 @@ class DetailLocationFragment(private val marker: Marker) : BottomSheetDialogFrag
     ): View? {
         binding = DetailLocationBinding.inflate(inflater)
 
-        val location = marker.tag as Location
-        binding.detailGarbagePhoto.setImageBitmap(location.photo)
+        val location = marker.tag as LocationDto
+        //Decode the image to byteArray
+        val byteArray = Base64.decode(location.photo, Base64.DEFAULT)
+        //Decode the byteArray to Bitmap
+        val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+        binding.detailGarbagePhoto.setImageBitmap(bitmap)
         binding.locationDetailAddress.text = "${location.name}, ${location.city}"
         binding.locationDetailLatlng.text = "${location.latitude}, ${location.longitude}"
-        binding.creationDate.text = DateFormatter.formatDate(location.createDate)
+        //Format the date
+        binding.creationDate.text = DateFormatter.convertDateFormat(location.creationDate.toString())
         binding.claim.setOnClickListener {
             location.id?.let { claimLocation(it) }
         }
@@ -52,9 +59,13 @@ class DetailLocationFragment(private val marker: Marker) : BottomSheetDialogFrag
     }
 
     private fun claimLocation(locationId: Long) {
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-            homeViewModel.claimLocation(locationId)
-            dismiss()
+        homeViewModel.token.observe(viewLifecycleOwner) {
+            homeViewModel.userId.observe(viewLifecycleOwner) { userId ->
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                    homeViewModel.claimLocation(locationId, userId)
+                    dismiss()
+                }
+            }
         }
     }
 

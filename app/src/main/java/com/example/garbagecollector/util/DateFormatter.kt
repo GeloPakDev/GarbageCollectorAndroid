@@ -8,13 +8,11 @@ import java.time.format.DateTimeFormatter
 class DateFormatter {
     companion object {
         @RequiresApi(Build.VERSION_CODES.O)
-        fun formatDate(date: LocalDate?): String {
-            if (date == null) {
-                throw NullPointerException()
-            } else {
-                val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-                return date.format(formatter)
-            }
+        fun convertDateFormat(inputDate: String): String {
+            val formatterInput = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            val formatterOutput = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+            val date = LocalDate.parse(inputDate, formatterInput)
+            return date.format(formatterOutput)
         }
     }
 }
