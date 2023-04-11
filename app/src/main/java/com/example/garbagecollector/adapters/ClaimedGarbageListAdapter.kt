@@ -1,7 +1,9 @@
 package com.example.garbagecollector.adapters
 
 import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
 import android.os.Build
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +12,10 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.garbagecollector.R
-import com.example.garbagecollector.db.model.Location
+import com.example.garbagecollector.api.dto.LocationDto
 import com.example.garbagecollector.util.DateFormatter
 
-class ClaimedGarbageListAdapter(private var locationData: List<Location>) :
+class ClaimedGarbageListAdapter(private var locationData: List<LocationDto>) :
     RecyclerView.Adapter<ClaimedGarbageListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(
@@ -30,10 +32,15 @@ class ClaimedGarbageListAdapter(private var locationData: List<Location>) :
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val locationItem = locationData[position]
-        holder.garbagePublishDate.text = DateFormatter.formatDate(locationItem.createDate)
+        //Format received date
+        holder.garbagePublishDate.text = DateFormatter.convertDateFormat(locationItem.creationDate.toString())
         holder.claimedGarbageAddress.text =
             "${locationItem.name}, ${locationItem.city}, ${locationItem.postalCode.toString()}"
-        holder.claimedGarbagePhoto.setImageBitmap(locationItem.photo)
+        //Decode the string into byte array
+        val byteArray = Base64.decode(locationItem.photo, Base64.DEFAULT)
+        //Decode to Bitmap to set it
+        val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+        holder.claimedGarbagePhoto.setImageBitmap(bitmap)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

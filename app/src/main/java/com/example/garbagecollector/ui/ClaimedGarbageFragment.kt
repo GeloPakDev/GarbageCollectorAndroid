@@ -6,14 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.garbagecollector.adapters.ClaimedGarbageListAdapter
 import com.example.garbagecollector.databinding.FragmentClaimedGarbageBinding
-import com.example.garbagecollector.viewmodel.HomeViewModel
+import com.example.garbagecollector.viewmodel.MyGarbageViewModel
+import kotlinx.coroutines.launch
 
 class ClaimedGarbageFragment : Fragment() {
     private lateinit var binding: FragmentClaimedGarbageBinding
-    private val homeViewModel by viewModels<HomeViewModel>()
+    private val myGarbageViewModel by viewModels<MyGarbageViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,11 +25,14 @@ class ClaimedGarbageFragment : Fragment() {
 
         val recyclerView = binding.recyclerview
         recyclerView.layoutManager = LinearLayoutManager(context)
-
-        //TODO:Search for better solution in terms of initialization , and clean code
-        homeViewModel.getMarkers()?.observe(viewLifecycleOwner) {
-            val claimedGarbageListAdapter = ClaimedGarbageListAdapter(it)
-            recyclerView.adapter = claimedGarbageListAdapter
+        myGarbageViewModel.token.observe(viewLifecycleOwner) {
+            myGarbageViewModel.userId.observe(viewLifecycleOwner) { userId ->
+                viewLifecycleOwner.lifecycleScope.launch {
+                    val locations = myGarbageViewModel.getClaimedUserLocations(userId)
+                    val claimedGarbageListAdapter = ClaimedGarbageListAdapter(locations)
+                    recyclerView.adapter = claimedGarbageListAdapter
+                }
+            }
         }
         return binding.root
     }

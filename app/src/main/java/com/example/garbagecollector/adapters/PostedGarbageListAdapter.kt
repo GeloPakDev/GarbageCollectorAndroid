@@ -1,7 +1,9 @@
 package com.example.garbagecollector.adapters
 
 import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
 import android.os.Build
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +12,10 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.garbagecollector.R
-import com.example.garbagecollector.db.model.Location
+import com.example.garbagecollector.api.dto.LocationDto
 import com.example.garbagecollector.util.DateFormatter
 
-class PostedGarbageListAdapter(private var locationData: List<Location>) :
+class PostedGarbageListAdapter(private var locationData: List<LocationDto>) :
     RecyclerView.Adapter<PostedGarbageListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(
@@ -21,7 +23,8 @@ class PostedGarbageListAdapter(private var locationData: List<Location>) :
         viewType: Int
     ): ViewHolder {
         return ViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.posted_garbage_list_item, parent, false)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.posted_garbage_list_item, parent, false)
         )
     }
 
@@ -29,9 +32,16 @@ class PostedGarbageListAdapter(private var locationData: List<Location>) :
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val locationItem = locationData[position]
-        holder.garbagePublishDate.text = DateFormatter.formatDate(locationItem.createDate)
-        holder.claimedGarbageAddress.text = "${locationItem.name}, ${locationItem.city}, ${locationItem.postalCode.toString()}"
-        holder.claimedGarbagePhoto.setImageBitmap(locationItem.photo)
+        //Format received date
+        holder.garbagePublishDate.text =
+            DateFormatter.convertDateFormat(locationItem.creationDate.toString())
+        holder.claimedGarbageAddress.text =
+            "${locationItem.name}, ${locationItem.city}, ${locationItem.postalCode.toString()}"
+        //Decode the string into byte array
+        val byteArray = Base64.decode(locationItem.photo, Base64.DEFAULT)
+        //Decode to Bitmap to set it
+        val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+        holder.claimedGarbagePhoto.setImageBitmap(bitmap)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
