@@ -4,7 +4,7 @@ import com.example.garbagecollector.api.dto.LoginDto
 import com.example.garbagecollector.api.dto.LoginJWTDto
 import com.example.garbagecollector.api.dto.RegistrationDto
 import com.example.garbagecollector.api.dto.UserDto
-import com.example.garbagecollector.db.model.User
+import com.example.garbagecollector.model.User
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
