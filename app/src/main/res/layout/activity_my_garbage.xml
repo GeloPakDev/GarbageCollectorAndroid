@@ -8,7 +8,8 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#0F9D58">
+        android:background="#0F9D58"
+        app:elevation="0dp">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -22,7 +23,7 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:id="@+id/imageView2"
+                    android:id="@+id/backButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
@@ -43,32 +44,15 @@
                     android:textColor="@color/text_black"
                     android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/imageView2"
+                    app:layout_constraintStart_toEndOf="@+id/backButton"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.appcompat.widget.Toolbar>
-        <!--        <include-->
-        <!--            android:id="@+id/toolbar"-->
-        <!--            layout="@layout/custom_toolbar" />-->
-
-        <!--        <androidx.appcompat.widget.Toolbar-->
-        <!--            android:paddingEnd="10dp"-->
-        <!--            android:id="@+id/toolbar"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:background="@color/white"-->
-        <!--            android:gravity="center"-->
-        <!--            android:theme="@style/ToolbarTheme"-->
-        <!--            app:layout_scrollFlags="scroll|enterAlways"-->
-        <!--            app:navigationIcon="@drawable/arrow_left"-->
-        <!--            app:title="My Garbage"-->
-        <!--            app:titleTextColor="@color/text_black" />-->
-
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_tablayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             app:tabIndicatorColor="@color/text_black"
             app:tabIndicatorHeight="3dp"
             app:tabMode="fixed"
