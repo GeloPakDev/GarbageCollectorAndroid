@@ -1,5 +1,6 @@
 package com.example.garbagecollector.ui
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -18,6 +19,11 @@ class MyGarbageActivity : AppCompatActivity() {
         val toolbar = binding.toolbar
         val viewPager = binding.tabViewpager
         val tabLayout = binding.tabTablayout
+        binding.backButton.setOnClickListener{
+            val intent = Intent(this , MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
 
         setSupportActionBar(toolbar)
         setupViewPager(viewPager)
