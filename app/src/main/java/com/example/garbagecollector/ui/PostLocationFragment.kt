@@ -95,9 +95,13 @@ class PostLocationFragment(bitmap: Bitmap) : BottomSheetDialogFragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun saveLocation(location: LatLng, address: Address?, garbagePhoto: Bitmap) {
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-            homeViewModel.addLocation(location, address, garbagePhoto)
-            dismiss()
+        homeViewModel.token.observe(viewLifecycleOwner) {
+            homeViewModel.userId.observe(viewLifecycleOwner) {
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                    homeViewModel.addLocation(location, address, garbagePhoto)
+                    dismiss()
+                }
+            }
         }
     }
 

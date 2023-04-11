@@ -1,25 +1,29 @@
 package com.example.garbagecollector.api
 
-import com.example.garbagecollector.api.dto.LoginDto
-import com.example.garbagecollector.api.dto.LoginJWTDto
-import com.example.garbagecollector.api.dto.RegistrationDto
-import com.example.garbagecollector.db.model.Location
-import com.example.garbagecollector.db.model.User
+import com.example.garbagecollector.api.dto.LocationDto
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface LocationApi {
 
     @GET("api/locations")
-    suspend fun getLocations(): List<Location>
+    suspend fun getLocations(): List<LocationDto>
 
     @POST("api/locations")
-    suspend fun postLocation(@Body loginDto: LoginDto): Location
+    suspend fun postLocation(@Body location: LocationDto): LocationDto
 
-    @POST("api/register")
-    suspend fun registerUser(@Body registrationDto: RegistrationDto): User
+    @GET("api/locations/claimed")
+    suspend fun getClaimedUserLocations(@Query("userId") userId: Long): List<LocationDto>
 
-    @POST("api/auth")
-    suspend fun loginUser(@Body loginDto: LoginDto): LoginJWTDto
+    @GET("api/locations/posted")
+    suspend fun getPostedUserLocations(@Query("userId") userId: Long): List<LocationDto>
+
+    @PATCH("api/locations")
+    suspend fun claimLocation(
+        @Query("id") id: Long,
+        @Query("claimedUserId") claimedUserId: Long
+    )
 }

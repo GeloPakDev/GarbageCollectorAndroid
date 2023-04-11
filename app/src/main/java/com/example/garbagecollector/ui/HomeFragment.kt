@@ -12,8 +12,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.garbagecollector.R
-import com.example.garbagecollector.db.model.Location
+import com.example.garbagecollector.api.dto.LocationDto
 import com.example.garbagecollector.util.Constants
 import com.example.garbagecollector.viewmodel.HomeViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -21,6 +22,8 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class HomeFragment : Fragment(), OnMapReadyCallback {
@@ -107,9 +110,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         requestPermissionLauncher.launch(ACCESS_FINE_LOCATION)
     }
 
-    private fun displayAllMarkers(markers: List<Location>) {
+    private fun displayAllMarkers(markers: List<LocationDto>?) {
         //Locate all new markers on the map
-        markers.forEach {
+        markers?.forEach {
             val latLng = LatLng(it.latitude, it.longitude)
             val marker = googleMap.addMarker(MarkerOptions().position(latLng))
             marker?.tag = it
@@ -117,13 +120,16 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun createLocationObserver() {
-        //Observe for the markers from the Repository
-        homeViewModel.getMarkers()?.observe(this) {
-            //Clear all existing markers from the map before retrieving new one
-            googleMap.clear()
-            displayAllMarkers(it)
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+            //Observe for the markers from the Server
+            homeViewModel.getAllLiveLocations().observe(viewLifecycleOwner) {
+                //Clear all existing markers from the map before retrieving new one
+                googleMap.clear()
+                displayAllMarkers(it)
+            }
         }
     }
+
 
     private fun showDetailLocation(googleMap: GoogleMap) {
         googleMap.setOnMarkerClickListener {
