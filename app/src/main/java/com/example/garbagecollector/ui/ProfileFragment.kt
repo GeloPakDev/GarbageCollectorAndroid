@@ -81,7 +81,7 @@ class ProfileFragment : Fragment() {
                 startActivity(intent)
             }
             "Ranking" -> {
-                val intent = Intent(activity, RegistrationActivity::class.java)
+                val intent = Intent(activity, RankingActivity::class.java)
                 startActivity(intent)
             }
             "Notifications" -> {
