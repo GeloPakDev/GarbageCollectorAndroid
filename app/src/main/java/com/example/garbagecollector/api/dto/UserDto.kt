@@ -1,6 +1,6 @@
 package com.example.garbagecollector.api.dto
 
-import com.example.garbagecollector.db.model.User
+import com.example.garbagecollector.model.User
 
 
 data class UserDto(
