@@ -28,14 +28,14 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     fun registerUser(registrationDto: RegistrationDto) {
         viewModelScope.launch(Dispatchers.IO) {
             //Send request to register the user
-            RetrofitInstance.api.registerUser(registrationDto)
+            RetrofitInstance.userApi.registerUser(registrationDto)
         }
     }
 
     fun loginUser(loginDto: LoginDto) {
         viewModelScope.launch(Dispatchers.IO) {
             //Send request to sign in user and retrieve JWT token and email
-            val loginJWTDto = RetrofitInstance.api.loginUser(loginDto)
+            val loginJWTDto = RetrofitInstance.userApi.loginUser(loginDto)
             //Save JWT token to the Local DataStore to make subsequent requests
             saveCredentialsToDataStore(loginJWTDto)
         }
@@ -61,7 +61,9 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 .build()
                 .create(UserApi::class.java)
             //Send request to find out user by email
-            retrofit.getUserByEmail(email)
+            val user = retrofit.getUserByEmail(email)
+            user.data?.id?.let { saveUserIdToDataStore(it) }
+            user
         }
 
 
@@ -69,6 +71,12 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         viewModelScope.launch(Dispatchers.IO) {
             //Saves JWT token and email to the database
             repository.saveUserCredentials(loginJWTDto)
+        }
+    }
+
+    private fun saveUserIdToDataStore(userId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.saveUserId(userId)
         }
     }
 
