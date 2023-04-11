@@ -1,7 +1,10 @@
 package com.example.garbagecollector.ui
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
@@ -10,7 +13,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -97,9 +102,12 @@ class PostLocationFragment(bitmap: Bitmap) : BottomSheetDialogFragment() {
     private fun saveLocation(location: LatLng, address: Address?, garbagePhoto: Bitmap) {
         homeViewModel.token.observe(viewLifecycleOwner) {
             homeViewModel.userId.observe(viewLifecycleOwner) {
-                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                val job = viewLifecycleOwner.lifecycleScope.launch {
                     homeViewModel.addLocation(location, address, garbagePhoto)
+                }
+                job.invokeOnCompletion {
                     dismiss()
+                    showSuccessDialog()
                 }
             }
         }
@@ -108,5 +116,18 @@ class PostLocationFragment(bitmap: Bitmap) : BottomSheetDialogFragment() {
     private fun setupLocationClient() {
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
+    }
+
+    private fun showSuccessDialog() {
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setContentView(R.layout.success_post_dialog)
+        val okButton = dialog.findViewById<AppCompatButton>(R.id.ok_button)
+        okButton.setOnClickListener{
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 }
