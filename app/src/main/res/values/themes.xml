@@ -54,5 +54,18 @@
         <item name="cornerRadius">40dp</item>
     </style>
 
+    <style name="Widget.BottomNavigationViewActive" parent="Widget.Design.BottomNavigationView">
+        <item name="fontFamily">@font/poppinsregular</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/bottom_title_color</item>
+    </style>
+
+    <style name="Widget.BottomNavigationViewInactive" parent="Widget.Design.BottomNavigationView">
+        <item name="fontFamily">@font/poppinsregular</item>
+        <item name="color">@color/text_black</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/text_black</item>
+    </style>
+
 
 </resources>

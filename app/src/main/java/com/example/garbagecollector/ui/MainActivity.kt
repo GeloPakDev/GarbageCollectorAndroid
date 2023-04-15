@@ -12,10 +12,13 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.garbagecollector.R
 import com.example.garbagecollector.databinding.ActivityMainBinding
 import com.example.garbagecollector.util.Constants
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
     //As soon as the photo has taken open PostLocationFragment
     private val startForResult: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -32,18 +35,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         //Set up the BottomNavigationView
         val bottomNavigationView = binding.bottomNavigationView
-        bottomNavigationView.background = null
-        //Hide the middle button in the bottom app bar
-        bottomNavigationView.menu.getItem(2).isEnabled = false
         //Connect Navigation Graph
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
         bottomNavigationView.setupWithNavController(navController)
         //Open Camera
-        binding.camera.setOnClickListener {
+        bottomNavigationView.menu.getItem(2).setOnMenuItemClickListener {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             startForResult.launch(intent)
+            false
         }
     }
 }
