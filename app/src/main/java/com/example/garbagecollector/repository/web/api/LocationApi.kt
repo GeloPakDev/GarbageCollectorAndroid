@@ -1,6 +1,7 @@
-package com.example.garbagecollector.api
+package com.example.garbagecollector.repository.web.api
 
-import com.example.garbagecollector.api.dto.LocationDto
+import com.example.garbagecollector.repository.web.dto.LocationDto
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
@@ -10,7 +11,7 @@ import retrofit2.http.Query
 interface LocationApi {
 
     @GET("api/locations")
-    suspend fun getLocations(): List<LocationDto>
+    suspend fun getLocations(): Response<List<LocationDto>>
 
     @POST("api/locations")
     suspend fun postLocation(@Body location: LocationDto): LocationDto

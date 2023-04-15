@@ -8,24 +8,27 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.garbagecollector.R
-import com.example.garbagecollector.api.dto.LocationDto
+import com.example.garbagecollector.repository.web.dto.LocationDto
 import com.example.garbagecollector.util.Constants
+import com.example.garbagecollector.repository.web.NetworkResult
 import com.example.garbagecollector.viewmodel.HomeViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class HomeFragment : Fragment(), OnMapReadyCallback {
     //To control and query the map
     private lateinit var googleMap: GoogleMap
@@ -122,10 +125,34 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private fun createLocationObserver() {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
             //Observe for the markers from the Server
-            homeViewModel.getAllLiveLocations().observe(viewLifecycleOwner) {
+            homeViewModel.getAllLiveLocations()
+            homeViewModel.locationsResponse.observe(viewLifecycleOwner) { response ->
                 //Clear all existing markers from the map before retrieving new one
                 googleMap.clear()
-                displayAllMarkers(it)
+
+                when (response) {
+                    is NetworkResult.Success -> {
+                        displayAllMarkers(response.data)
+//                        hideShimmerEffect()
+//                        response.data?.let {
+//                            mAdapter.setData(it)
+//                        }
+                    }
+                    is NetworkResult.Error -> {
+//                        hideShimmerEffect()
+//                        loadDataFromCache()
+                        Toast.makeText(
+                            requireContext(), response.message.toString(),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    is NetworkResult.Loading -> {
+                        Toast.makeText(
+                            requireContext(), "Data is Loading..",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
             }
         }
     }
