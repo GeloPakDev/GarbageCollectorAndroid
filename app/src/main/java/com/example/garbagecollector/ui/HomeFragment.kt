@@ -71,7 +71,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         //Get the User's location
         getCurrentLocation()
         //Observe for Location changes
-        createLocationObserver()
+        requestApiData()
         //Listener for Markers on the map
         showDetailLocation(googleMap)
     }
@@ -122,25 +122,19 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun createLocationObserver() {
+    private fun requestApiData() {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
             //Observe for the markers from the Server
             homeViewModel.getAllLiveLocations()
-            homeViewModel.locationsResponse.observe(viewLifecycleOwner) { response ->
+            homeViewModel.webLocations.observe(viewLifecycleOwner) { response ->
                 //Clear all existing markers from the map before retrieving new one
                 googleMap.clear()
 
                 when (response) {
                     is NetworkResult.Success -> {
                         displayAllMarkers(response.data)
-//                        hideShimmerEffect()
-//                        response.data?.let {
-//                            mAdapter.setData(it)
-//                        }
                     }
                     is NetworkResult.Error -> {
-//                        hideShimmerEffect()
-//                        loadDataFromCache()
                         Toast.makeText(
                             requireContext(), response.message.toString(),
                             Toast.LENGTH_SHORT

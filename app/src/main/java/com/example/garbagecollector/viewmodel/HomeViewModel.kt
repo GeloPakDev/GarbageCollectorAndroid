@@ -33,11 +33,13 @@ class HomeViewModel @Inject constructor(
     application: Application
 ) :
     AndroidViewModel(application) {
+    //Data Store
     private val dataStoreManager = DataStoreManager(application)
     val token = dataStoreManager.userTokenFlow.asLiveData()
     val userId = dataStoreManager.userId.asLiveData()
 
-    var locationsResponse = MutableLiveData<NetworkResult<List<LocationDto>>>()
+    //Remote
+    var webLocations = MutableLiveData<NetworkResult<List<LocationDto>>>()
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -90,16 +92,16 @@ class HomeViewModel @Inject constructor(
     }
 
     private suspend fun getSafeLocationsCall() {
-        locationsResponse.value = NetworkResult.Loading()
+        webLocations.value = NetworkResult.Loading()
         if (hasInternetConnection()) {
             try {
                 val response = repository.remoteDataSource.getLocations()
-                locationsResponse.value = handleLocationsResponse(response)
+                webLocations.value = handleLocationsResponse(response)
             } catch (e: Exception) {
-                locationsResponse.value = NetworkResult.Error("Locations not found")
+                webLocations.value = NetworkResult.Error("Locations not found")
             }
         } else {
-            locationsResponse.value = NetworkResult.Error("No Internet Connection.")
+            webLocations.value = NetworkResult.Error("No Internet Connection.")
         }
     }
 
