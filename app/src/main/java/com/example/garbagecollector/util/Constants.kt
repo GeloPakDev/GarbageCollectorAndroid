@@ -6,5 +6,6 @@ class Constants {
         const val GARBAGE_IMAGE_INTENT = "data"
         const val LOCATION = "LatLng"
         const val DATASTORE_NAME = "AUTHORIZATION"
+        const val BASE_URL = "https://garbagecollectorapp.azurewebsites.net/"
     }
 }
