@@ -1,5 +1,7 @@
-package com.example.garbagecollector.api
+package com.example.garbagecollector.repository.web
 
+import com.example.garbagecollector.repository.web.api.LocationApi
+import com.example.garbagecollector.repository.web.api.UserApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -9,7 +11,6 @@ private const val BASE_URL = "https://garbagecollectorapp.azurewebsites.net/"
 
 object RetrofitInstance {
     private val logging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-
 
     private val client = OkHttpClient.Builder()
         .addInterceptor(logging)

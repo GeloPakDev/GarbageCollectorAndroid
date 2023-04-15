@@ -3,9 +3,9 @@ package com.example.garbagecollector.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.asLiveData
-import com.example.garbagecollector.api.LocationApi
-import com.example.garbagecollector.api.dto.LocationDto
-import com.example.garbagecollector.util.DataStoreManager
+import com.example.garbagecollector.repository.web.api.LocationApi
+import com.example.garbagecollector.repository.web.dto.LocationDto
+import com.example.garbagecollector.repository.local.DataStoreManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient

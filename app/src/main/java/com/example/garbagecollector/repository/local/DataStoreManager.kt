@@ -1,10 +1,11 @@
-package com.example.garbagecollector.util
+package com.example.garbagecollector.repository.local
 
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
-import com.example.garbagecollector.api.dto.LoginJWTDto
+import com.example.garbagecollector.repository.web.dto.LoginJWTDto
+import com.example.garbagecollector.util.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -17,7 +18,6 @@ class DataStoreManager(private val context: Context) {
             name = Constants.DATASTORE_NAME
         )
     }
-
 
     val userTokenFlow: Flow<String> = context.dataStore.data.map { preferences ->
         preferences[AUTH_TOKEN] ?: ""

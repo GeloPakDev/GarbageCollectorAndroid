@@ -10,7 +10,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.example.garbagecollector.api.dto.RegistrationDto
+import com.example.garbagecollector.repository.web.dto.RegistrationDto
 import com.example.garbagecollector.databinding.ActivityRegistrationBinding
 import com.example.garbagecollector.viewmodel.ProfileViewModel
 

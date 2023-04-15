@@ -12,7 +12,7 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.garbagecollector.R
-import com.example.garbagecollector.api.dto.LocationDto
+import com.example.garbagecollector.repository.web.dto.LocationDto
 import com.example.garbagecollector.util.DateFormatter
 
 class PostedGarbageListAdapter(private var locationData: List<LocationDto>) :

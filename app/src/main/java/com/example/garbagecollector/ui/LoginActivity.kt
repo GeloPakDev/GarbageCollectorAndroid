@@ -11,7 +11,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.activity.viewModels
 import com.example.garbagecollector.R
-import com.example.garbagecollector.api.dto.LoginDto
+import com.example.garbagecollector.repository.web.dto.LoginDto
 import com.example.garbagecollector.databinding.LoginBinding
 import com.example.garbagecollector.viewmodel.ProfileViewModel
 

@@ -19,16 +19,17 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.garbagecollector.R
-import com.example.garbagecollector.api.dto.LocationDto
+import com.example.garbagecollector.repository.web.dto.LocationDto
 import com.example.garbagecollector.databinding.DetailLocationBinding
 import com.example.garbagecollector.util.Constants
 import com.example.garbagecollector.util.DateFormatter
 import com.example.garbagecollector.viewmodel.HomeViewModel
 import com.google.android.gms.maps.model.Marker
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class DetailLocationFragment(private val marker: Marker) : BottomSheetDialogFragment() {
 
     private lateinit var binding: DetailLocationBinding

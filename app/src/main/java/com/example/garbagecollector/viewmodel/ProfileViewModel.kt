@@ -2,14 +2,14 @@ package com.example.garbagecollector.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.example.garbagecollector.api.RetrofitInstance
-import com.example.garbagecollector.api.UserApi
-import com.example.garbagecollector.api.dto.LoginDto
-import com.example.garbagecollector.api.dto.LoginJWTDto
-import com.example.garbagecollector.api.dto.RegistrationDto
-import com.example.garbagecollector.api.dto.UserDto
+import com.example.garbagecollector.repository.web.RetrofitInstance
+import com.example.garbagecollector.repository.web.api.UserApi
+import com.example.garbagecollector.repository.web.dto.LoginDto
+import com.example.garbagecollector.repository.web.dto.LoginJWTDto
+import com.example.garbagecollector.repository.web.dto.RegistrationDto
+import com.example.garbagecollector.repository.web.dto.UserDto
 
-import com.example.garbagecollector.util.DataStoreManager
+import com.example.garbagecollector.repository.local.DataStoreManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

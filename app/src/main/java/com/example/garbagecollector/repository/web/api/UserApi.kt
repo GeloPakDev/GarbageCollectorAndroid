@@ -1,9 +1,9 @@
-package com.example.garbagecollector.api
+package com.example.garbagecollector.repository.web.api
 
-import com.example.garbagecollector.api.dto.LoginDto
-import com.example.garbagecollector.api.dto.LoginJWTDto
-import com.example.garbagecollector.api.dto.RegistrationDto
-import com.example.garbagecollector.api.dto.UserDto
+import com.example.garbagecollector.repository.web.dto.LoginDto
+import com.example.garbagecollector.repository.web.dto.LoginJWTDto
+import com.example.garbagecollector.repository.web.dto.RegistrationDto
+import com.example.garbagecollector.repository.web.dto.UserDto
 import com.example.garbagecollector.model.User
 import retrofit2.http.Body
 import retrofit2.http.GET

@@ -1,4 +1,4 @@
-package com.example.garbagecollector.api.dto
+package com.example.garbagecollector.repository.web.dto
 
 data class LoginDto(
     val email: String? = null,
