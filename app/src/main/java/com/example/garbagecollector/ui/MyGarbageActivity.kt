@@ -8,7 +8,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.example.garbagecollector.databinding.ActivityMyGarbageBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MyGarbageActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMyGarbageBinding
     override fun onCreate(savedInstanceState: Bundle?) {

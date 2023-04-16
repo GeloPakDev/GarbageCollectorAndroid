@@ -26,12 +26,13 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
 
-
+@AndroidEntryPoint
 class PostLocationFragment(bitmap: Bitmap) : BottomSheetDialogFragment() {
 
     private lateinit var binding: PostLocationBinding

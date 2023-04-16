@@ -11,8 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.garbagecollector.adapters.PostedGarbageListAdapter
 import com.example.garbagecollector.databinding.FragmentPostedGarbageBinding
 import com.example.garbagecollector.viewmodel.MyGarbageViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class PostedGarbageFragment : Fragment() {
 
     private lateinit var binding: FragmentPostedGarbageBinding
@@ -27,6 +29,7 @@ class PostedGarbageFragment : Fragment() {
 
         val recyclerView = binding.recyclerview
         recyclerView.layoutManager = LinearLayoutManager(context)
+        //TODO:Remove callback hell
         myGarbageViewModel.token.observe(viewLifecycleOwner) {
             myGarbageViewModel.userId.observe(viewLifecycleOwner) { userId ->
                 viewLifecycleOwner.lifecycleScope.launch {

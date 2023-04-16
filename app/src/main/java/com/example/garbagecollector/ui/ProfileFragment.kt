@@ -14,8 +14,10 @@ import androidx.navigation.fragment.findNavController
 import com.example.garbagecollector.R
 import com.example.garbagecollector.databinding.ProfileBinding
 import com.example.garbagecollector.viewmodel.ProfileViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class ProfileFragment : Fragment() {
 
     private lateinit var binding: ProfileBinding
