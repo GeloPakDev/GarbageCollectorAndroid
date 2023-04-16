@@ -66,6 +66,7 @@ class DetailLocationFragment(private val marker: Marker) : BottomSheetDialogFrag
     }
 
     private fun claimLocation(locationId: Long) {
+        //TODO:Remove callback hell
         homeViewModel.token.observe(viewLifecycleOwner) {
             homeViewModel.userId.observe(viewLifecycleOwner) { userId ->
                 val job = viewLifecycleOwner.lifecycleScope.launch {
