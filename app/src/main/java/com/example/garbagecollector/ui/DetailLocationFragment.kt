@@ -18,6 +18,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.garbagecollector.R
 import com.example.garbagecollector.repository.web.dto.LocationDto
 import com.example.garbagecollector.databinding.DetailLocationBinding
@@ -75,6 +76,7 @@ class DetailLocationFragment(private val marker: Marker) : BottomSheetDialogFrag
                 }
                 job.invokeOnCompletion {
                     dismiss()
+                    findNavController().navigate(R.id.homeFragment)
                     showSuccessDialog()
                 }
             }

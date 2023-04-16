@@ -129,7 +129,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             homeViewModel.webLocations.observe(viewLifecycleOwner) { response ->
                 //Clear all existing markers from the map before retrieving new one
                 googleMap.clear()
-
                 when (response) {
                     is NetworkResult.Success -> {
                         displayAllMarkers(response.data)

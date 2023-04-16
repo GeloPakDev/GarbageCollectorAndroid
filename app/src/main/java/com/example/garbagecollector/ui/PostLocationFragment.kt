@@ -108,6 +108,7 @@ class PostLocationFragment(bitmap: Bitmap) : BottomSheetDialogFragment() {
                 }
                 job.invokeOnCompletion {
                     dismiss()
+                    findNavController().navigate(R.id.homeFragment)
                     showSuccessDialog()
                 }
             }
@@ -126,7 +127,7 @@ class PostLocationFragment(bitmap: Bitmap) : BottomSheetDialogFragment() {
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.setContentView(R.layout.success_post_dialog)
         val okButton = dialog.findViewById<AppCompatButton>(R.id.ok_button)
-        okButton.setOnClickListener{
+        okButton.setOnClickListener {
             dialog.dismiss()
         }
         dialog.show()
