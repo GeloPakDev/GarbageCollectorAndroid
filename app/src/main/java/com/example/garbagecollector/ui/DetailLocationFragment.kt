@@ -10,6 +10,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Base64
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +21,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.garbagecollector.R
-import com.example.garbagecollector.repository.web.dto.LocationDto
 import com.example.garbagecollector.databinding.DetailLocationBinding
 import com.example.garbagecollector.util.Constants
 import com.example.garbagecollector.util.DateFormatter
@@ -45,25 +45,37 @@ class DetailLocationFragment(private val marker: Marker) : BottomSheetDialogFrag
     ): View? {
         binding = DetailLocationBinding.inflate(inflater)
 
-        val location = marker.tag as LocationDto
-        //Decode the image to byteArray
-        val byteArray = Base64.decode(location.photo, Base64.DEFAULT)
-        //Decode the byteArray to Bitmap
-        val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-        binding.detailGarbagePhoto.setImageBitmap(bitmap)
-        binding.locationDetailAddress.text = "${location.name}, ${location.city}"
-        binding.locationDetailLatlng.text = "${location.latitude}, ${location.longitude}"
-        //Format the date
-        binding.creationDate.text =
-            DateFormatter.convertDateFormat(location.creationDate.toString())
-        binding.claim.setOnClickListener {
-            location.id?.let { claimLocation(it) }
-        }
+        val locationId = marker.tag as Long
+        setViewDetails(locationId, binding)
+
         binding.copy.setOnClickListener {
             copyToClipboard(binding.locationDetailLatlng)
         }
 
         return binding.root
+    }
+
+    @SuppressLint("NewApi", "SetTextI18n")
+    private fun setViewDetails(locationId: Long, binding: DetailLocationBinding) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val locationDto = homeViewModel.getLocationById(locationId)
+            Log.d("OBJECT", locationDto.toString())
+//            Decode the image to byteArray
+            val byteArray = Base64.decode(locationDto.data?.photo, Base64.DEFAULT)
+//            Decode the byteArray to Bitmap
+            val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+            binding.detailGarbagePhoto.setImageBitmap(bitmap)
+            binding.locationDetailAddress.text =
+                "${locationDto.data?.name}, ${locationDto.data?.city}"
+            binding.locationDetailLatlng.text =
+                "${locationDto.data?.latitude}, ${locationDto.data?.longitude}"
+//            Format the date
+            binding.creationDate.text =
+                DateFormatter.convertDateFormat(locationDto.data?.creationDate.toString())
+            binding.claim.setOnClickListener {
+                locationDto.data?.id?.let { claimLocation(it) }
+            }
+        }
     }
 
     private fun claimLocation(locationId: Long) {

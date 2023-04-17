@@ -19,9 +19,13 @@ import com.example.garbagecollector.model.State
 import com.example.garbagecollector.repository.local.DataStoreManager
 import com.example.garbagecollector.repository.Repository
 import com.example.garbagecollector.repository.web.NetworkResult
+import com.example.garbagecollector.repository.web.dto.Location
+import com.example.garbagecollector.repository.web.dto.SingleLocationDto
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.time.LocalDate
@@ -39,7 +43,7 @@ class HomeViewModel @Inject constructor(
     val userId = dataStoreManager.userId.asLiveData()
 
     //Remote
-    var webLocations = MutableLiveData<NetworkResult<List<LocationDto>>>()
+    var webLocations = MutableLiveData<NetworkResult<List<Location>>>()
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -68,6 +72,11 @@ class HomeViewModel @Inject constructor(
     suspend fun claimLocation(locationId: Long, claimedUserId: Long) {
         repository.remoteDataSource.claimLocation(locationId, claimedUserId)
     }
+
+    suspend fun getLocationById(locationId: Long): SingleLocationDto =
+        withContext(Dispatchers.IO) {
+            repository.remoteDataSource.getLocationById(locationId)
+        }
 
 
     fun getAllLiveLocations() = viewModelScope.launch {
@@ -105,7 +114,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun handleLocationsResponse(response: Response<List<LocationDto>>): NetworkResult<List<LocationDto>> {
+    private fun handleLocationsResponse(response: Response<List<Location>>): NetworkResult<List<Location>> {
         when {
             response.message().toString().contains("timeout") -> {
                 return NetworkResult.Error("Timeout")

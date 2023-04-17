@@ -11,7 +11,7 @@ class RemoteDataSource @Inject constructor(
     private val locationApi: LocationApi,
     private val userApi: UserApi
 ) {
-    suspend fun getLocations(): Response<List<LocationDto>> {
+    suspend fun getLocations(): Response<List<Location>> {
         return locationApi.getLocations()
     }
 
@@ -32,6 +32,10 @@ class RemoteDataSource @Inject constructor(
         claimedUserId: Long
     ) {
         locationApi.claimLocation(id, claimedUserId)
+    }
+
+    suspend fun getLocationById(locationId: Long): SingleLocationDto {
+        return locationApi.getLocationById(locationId)
     }
 
     suspend fun registerUser(registrationDto: RegistrationDto): User {

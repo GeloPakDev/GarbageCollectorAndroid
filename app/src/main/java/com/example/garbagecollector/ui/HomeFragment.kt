@@ -15,9 +15,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.garbagecollector.R
-import com.example.garbagecollector.repository.web.dto.LocationDto
-import com.example.garbagecollector.util.Constants
 import com.example.garbagecollector.repository.web.NetworkResult
+import com.example.garbagecollector.repository.web.dto.Location
+import com.example.garbagecollector.util.Constants
 import com.example.garbagecollector.viewmodel.HomeViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -25,7 +25,6 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -100,7 +99,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                     val latLng = LatLng(location.latitude, location.longitude)
                     //Zoom the user to this location
                     val update = CameraUpdateFactory.newLatLngZoom(latLng, 16.0f)
-                    googleMap.moveCamera(update)
+                    googleMap.animateCamera(update)
                 } else {
                     Log.e(Constants.HOME_FRAGMENT_TAG, "No location found!")
                 }
@@ -113,17 +112,19 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         requestPermissionLauncher.launch(ACCESS_FINE_LOCATION)
     }
 
-    private fun displayAllMarkers(markers: List<LocationDto>?) {
-        //Locate all new markers on the map
-        markers?.forEach {
-            val latLng = LatLng(it.latitude, it.longitude)
-            val marker = googleMap.addMarker(MarkerOptions().position(latLng))
-            marker?.tag = it
+    private fun displayAllMarkers(markers: List<Location>?) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            //Locate all new markers on the map
+            markers?.forEach {
+                val latLng = LatLng(it.latitude, it.longitude)
+                val marker = googleMap.addMarker(MarkerOptions().position(latLng))
+                marker?.tag = it.id
+            }
         }
     }
 
     private fun requestApiData() {
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+        viewLifecycleOwner.lifecycleScope.launch {
             //Observe for the markers from the Server
             homeViewModel.getAllLiveLocations()
             homeViewModel.webLocations.observe(viewLifecycleOwner) { response ->
@@ -152,10 +153,14 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
 
     private fun showDetailLocation(googleMap: GoogleMap) {
-        googleMap.setOnMarkerClickListener {
-            val detailLocationFragment = DetailLocationFragment(it)
-            detailLocationFragment.show(childFragmentManager, "TAG")
-            false
+        viewLifecycleOwner.lifecycleScope.launch {
+            googleMap.setOnMarkerClickListener {
+                val detailLocationFragment = DetailLocationFragment(it)
+                detailLocationFragment.show(childFragmentManager, "TAG")
+                val cameraUpdate = CameraUpdateFactory.newLatLngZoom(it.position, 16.0f)
+                googleMap.animateCamera(cameraUpdate)
+                false
+            }
         }
     }
 }
