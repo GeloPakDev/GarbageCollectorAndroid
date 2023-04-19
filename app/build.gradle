@@ -34,6 +34,7 @@ android {
         jvmTarget = '1.8'
     }
     buildFeatures {
+        dataBinding true
         viewBinding true
     }
 }
@@ -70,6 +71,8 @@ dependencies {
     //Dagger - Hilt
     implementation "com.google.dagger:hilt-android:2.44"
     kapt "com.google.dagger:hilt-android-compiler:2.44"
+    // Data binding
+    kapt "androidx.databinding:databinding-common:7.4.2"
 
     kapt "androidx.hilt:hilt-compiler:1.0.0"
     testImplementation 'junit:junit:4.13.2'
