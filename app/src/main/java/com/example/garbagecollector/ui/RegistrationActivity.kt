@@ -13,7 +13,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.garbagecollector.repository.web.dto.RegistrationDto
 import com.example.garbagecollector.databinding.ActivityRegistrationBinding
 import com.example.garbagecollector.viewmodel.ProfileViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RegistrationActivity : AppCompatActivity() {
 
     private val viewModels by viewModels<ProfileViewModel>()
