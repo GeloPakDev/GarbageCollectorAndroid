@@ -1,4 +1,4 @@
-package com.example.garbagecollector.repository.database
+package com.example.garbagecollector.repository.database.model
 
 import android.graphics.Bitmap
 import androidx.room.Entity

@@ -14,7 +14,9 @@ import com.example.garbagecollector.R
 import com.example.garbagecollector.repository.web.dto.LoginDto
 import com.example.garbagecollector.databinding.LoginBinding
 import com.example.garbagecollector.viewmodel.ProfileViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: LoginBinding
     private val viewModels by viewModels<ProfileViewModel>()

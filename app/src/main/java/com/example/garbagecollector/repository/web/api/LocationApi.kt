@@ -19,10 +19,10 @@ interface LocationApi {
     suspend fun postLocation(@Body location: LocationDto): LocationDto
 
     @GET("api/locations/claimed")
-    suspend fun getClaimedUserLocations(@Query("userId") userId: Long): List<LocationDto>
+    suspend fun getClaimedUserLocations(@Query("userId") userId: Long): Response<List<LocationDto>>
 
     @GET("api/locations/posted")
-    suspend fun getPostedUserLocations(@Query("userId") userId: Long): List<LocationDto>
+    suspend fun getPostedUserLocations(@Query("userId") userId: Long): Response<List<LocationDto>>
 
     @PATCH("api/locations")
     suspend fun claimLocation(

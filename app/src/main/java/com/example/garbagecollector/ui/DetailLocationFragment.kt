@@ -34,7 +34,6 @@ import kotlinx.coroutines.launch
 class DetailLocationFragment(private val marker: Marker) : BottomSheetDialogFragment() {
 
     private lateinit var binding: DetailLocationBinding
-
     private val homeViewModel by viewModels<HomeViewModel>()
 
 
@@ -60,16 +59,16 @@ class DetailLocationFragment(private val marker: Marker) : BottomSheetDialogFrag
         viewLifecycleOwner.lifecycleScope.launch {
             val locationDto = homeViewModel.getLocationById(locationId)
             Log.d("OBJECT", locationDto.toString())
-//            Decode the image to byteArray
+            //Decode the image to byteArray
             val byteArray = Base64.decode(locationDto.data?.photo, Base64.DEFAULT)
-//            Decode the byteArray to Bitmap
+            //Decode the byteArray to Bitmap
             val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
             binding.detailGarbagePhoto.setImageBitmap(bitmap)
             binding.locationDetailAddress.text =
                 "${locationDto.data?.name}, ${locationDto.data?.city}"
             binding.locationDetailLatlng.text =
                 "${locationDto.data?.latitude}, ${locationDto.data?.longitude}"
-//            Format the date
+            //Format the date
             binding.creationDate.text =
                 DateFormatter.convertDateFormat(locationDto.data?.creationDate.toString())
             binding.claim.setOnClickListener {
@@ -79,7 +78,6 @@ class DetailLocationFragment(private val marker: Marker) : BottomSheetDialogFrag
     }
 
     private fun claimLocation(locationId: Long) {
-        //TODO:Remove callback hell
         homeViewModel.token.observe(viewLifecycleOwner) {
             homeViewModel.userId.observe(viewLifecycleOwner) { userId ->
                 val job = viewLifecycleOwner.lifecycleScope.launch {

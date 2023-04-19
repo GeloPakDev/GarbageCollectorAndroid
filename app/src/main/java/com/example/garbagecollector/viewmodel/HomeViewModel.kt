@@ -1,12 +1,8 @@
 package com.example.garbagecollector.viewmodel
 
-import android.annotation.SuppressLint
 import android.app.Application
-import android.content.Context
 import android.graphics.Bitmap
 import android.location.Address
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.Base64
 import androidx.annotation.RequiresApi
@@ -21,6 +17,7 @@ import com.example.garbagecollector.repository.Repository
 import com.example.garbagecollector.repository.web.NetworkResult
 import com.example.garbagecollector.repository.web.dto.Location
 import com.example.garbagecollector.repository.web.dto.SingleLocationDto
+import com.example.garbagecollector.util.NetworkConnectivity.Companion.hasInternetConnection
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -83,26 +80,9 @@ class HomeViewModel @Inject constructor(
         getSafeLocationsCall()
     }
 
-    @SuppressLint("MissingPermission")
-    private fun hasInternetConnection(): Boolean {
-        val connectivityManager = getApplication<Application>().getSystemService(
-            Context.CONNECTIVITY_SERVICE
-        ) as ConnectivityManager
-
-        val activeNetwork = connectivityManager.activeNetwork ?: return false
-        val capabilities =
-            connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
-        return when {
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-            else -> false
-        }
-    }
-
     private suspend fun getSafeLocationsCall() {
         webLocations.value = NetworkResult.Loading()
-        if (hasInternetConnection()) {
+        if (hasInternetConnection(getApplication())) {
             try {
                 val response = repository.remoteDataSource.getLocations()
                 webLocations.value = handleLocationsResponse(response)

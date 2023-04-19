@@ -36,7 +36,6 @@ import java.util.*
 class PostLocationFragment(bitmap: Bitmap) : BottomSheetDialogFragment() {
 
     private lateinit var binding: PostLocationBinding
-
     //Get current user's location
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private val garbagePhoto: Bitmap = bitmap
