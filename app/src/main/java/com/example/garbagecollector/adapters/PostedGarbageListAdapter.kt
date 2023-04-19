@@ -1,56 +1,50 @@
 package com.example.garbagecollector.adapters
 
-import android.annotation.SuppressLint
-import android.graphics.BitmapFactory
-import android.os.Build
-import android.util.Base64
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.annotation.RequiresApi
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.garbagecollector.R
-import com.example.garbagecollector.repository.web.dto.LocationDto
-import com.example.garbagecollector.util.DateFormatter
+import com.example.garbagecollector.databinding.PostedGarbageListItemBinding
+import com.example.garbagecollector.repository.database.model.PostedLocation
+import com.example.garbagecollector.util.PostedLocationsDiffUtil
 
-class PostedGarbageListAdapter(private var locationData: List<LocationDto>) :
-    RecyclerView.Adapter<PostedGarbageListAdapter.ViewHolder>() {
+class PostedGarbageListAdapter : RecyclerView.Adapter<PostedGarbageListAdapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): ViewHolder {
-        return ViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.posted_garbage_list_item, parent, false)
-        )
+    private var locationData = emptyList<PostedLocation>()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder.from(parent)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val locationItem = locationData[position]
-        //Format received date
-        holder.garbagePublishDate.text =
-            DateFormatter.convertDateFormat(locationItem.creationDate.toString())
-        holder.claimedGarbageAddress.text =
-            "${locationItem.name}, ${locationItem.city}, ${locationItem.postalCode.toString()}"
-        //Decode the string into byte array
-        val byteArray = Base64.decode(locationItem.photo, Base64.DEFAULT)
-        //Decode to Bitmap to set it
-        val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-        holder.claimedGarbagePhoto.setImageBitmap(bitmap)
+        holder.bind(locationItem)
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val garbagePublishDate: TextView = itemView.findViewById(R.id.garbage_posted_date)
-        val claimedGarbagePhoto: ImageView = itemView.findViewById(R.id.posted_garbage_photo)
-        val claimedGarbageAddress: TextView = itemView.findViewById(R.id.posted_garbage_address)
+    class ViewHolder(private val binding: PostedGarbageListItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(locationDto: PostedLocation) {
+            binding.postedLocation = locationDto
+            binding.executePendingBindings()
+        }
+
+        companion object {
+            fun from(parent: ViewGroup): ViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = PostedGarbageListItemBinding.inflate(layoutInflater, parent, false)
+                return ViewHolder(binding)
+            }
+        }
     }
 
     override fun getItemCount(): Int {
         return locationData.size
+    }
+
+    fun setData(list: List<PostedLocation>) {
+        val locationsDiffUtil = PostedLocationsDiffUtil(locationData, list)
+        val diffUtilResult = DiffUtil.calculateDiff(locationsDiffUtil)
+        locationData = list
+        diffUtilResult.dispatchUpdatesTo(this)
     }
 }
