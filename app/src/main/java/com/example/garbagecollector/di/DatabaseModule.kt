@@ -22,10 +22,17 @@ class DatabaseModule {
             context,
             GarbageCollectorDatabase::class.java,
             DATABASE_NAME,
-        ).build()
+        ).fallbackToDestructiveMigration().build()
 
     @Singleton
     @Provides
     fun provideLocationDao(database: GarbageCollectorDatabase) = database.locationDao()
 
+    @Singleton
+    @Provides
+    fun providePostedLocationDao(database: GarbageCollectorDatabase) = database.postedLocationDao()
+
+    @Singleton
+    @Provides
+    fun provideClaimedLocationDao(database: GarbageCollectorDatabase) = database.claimedLocationDao()
 }

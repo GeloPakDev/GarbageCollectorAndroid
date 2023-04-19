@@ -7,7 +7,11 @@ class Constants {
         const val LOCATION = "LatLng"
         const val DATASTORE_NAME = "AUTHORIZATION"
         const val BASE_URL = "https://garbagecollectorapp.azurewebsites.net/"
+
+        //Database
         const val LOCATION_TABLE_NAME = "location"
+        const val CLAIMED_LOCATION_TABLE_NAME = "claimed_location"
+        const val POSTED_LOCATION_TABLE_NAME = "posted_location"
         const val DATABASE_NAME = "garbage_collector"
     }
 }
