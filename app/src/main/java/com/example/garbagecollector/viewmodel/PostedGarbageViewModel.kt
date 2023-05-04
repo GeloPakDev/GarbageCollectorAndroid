@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -36,7 +37,6 @@ class PostedGarbageViewModel @Inject constructor(
     //Data Store
     private val dataStoreManager = DataStoreManager(application)
     val token = dataStoreManager.userTokenFlow.asLiveData()
-    val userId = dataStoreManager.userId.asLiveData()
 
     //Remote
     var remoteLocations = MutableLiveData<NetworkResult<List<LocationDto>>>()
@@ -45,6 +45,10 @@ class PostedGarbageViewModel @Inject constructor(
         getLocationsSafeCall()
     }
 
+    suspend fun getTotalLocations(): Int = withContext(Dispatchers.IO) {
+        val userId = runBlocking { dataStoreManager.userId.first() }
+        repository.remoteDataSource.getTotalPostedUserLocations(userId)
+    }
 
     @SuppressLint("NewApi")
     private suspend fun getLocationsSafeCall() {
@@ -87,8 +91,8 @@ class PostedGarbageViewModel @Inject constructor(
                 return NetworkResult.Error("Locations Not Found")
             }
             response.isSuccessful -> {
-                val foodRecipes = response.body()
-                return NetworkResult.Success(foodRecipes!!)
+                val locations = response.body()
+                return NetworkResult.Success(locations!!)
             }
             else -> {
                 return NetworkResult.Error(response.message())

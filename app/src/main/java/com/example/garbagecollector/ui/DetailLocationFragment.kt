@@ -5,12 +5,9 @@ import android.app.Dialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Base64
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +19,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.garbagecollector.R
 import com.example.garbagecollector.databinding.DetailLocationBinding
+import com.example.garbagecollector.mapper.LocationsMapper
+import com.example.garbagecollector.repository.database.model.Location
 import com.example.garbagecollector.util.Constants
 import com.example.garbagecollector.util.DateFormatter
 import com.example.garbagecollector.viewmodel.HomeViewModel
@@ -45,7 +44,7 @@ class DetailLocationFragment(private val marker: Marker) : BottomSheetDialogFrag
         binding = DetailLocationBinding.inflate(inflater)
 
         val locationId = marker.tag as Long
-        setViewDetails(locationId, binding)
+        readDatabase(locationId , binding)
 
         binding.copy.setOnClickListener {
             copyToClipboard(binding.locationDetailLatlng)
@@ -55,25 +54,17 @@ class DetailLocationFragment(private val marker: Marker) : BottomSheetDialogFrag
     }
 
     @SuppressLint("NewApi", "SetTextI18n")
-    private fun setViewDetails(locationId: Long, binding: DetailLocationBinding) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            val locationDto = homeViewModel.getLocationById(locationId)
-            Log.d("OBJECT", locationDto.toString())
-            //Decode the image to byteArray
-            val byteArray = Base64.decode(locationDto.data?.photo, Base64.DEFAULT)
-            //Decode the byteArray to Bitmap
-            val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-            binding.detailGarbagePhoto.setImageBitmap(bitmap)
-            binding.locationDetailAddress.text =
-                "${locationDto.data?.name}, ${locationDto.data?.city}"
-            binding.locationDetailLatlng.text =
-                "${locationDto.data?.latitude}, ${locationDto.data?.longitude}"
-            //Format the date
-            binding.creationDate.text =
-                DateFormatter.convertDateFormat(locationDto.data?.creationDate.toString())
-            binding.claim.setOnClickListener {
-                locationDto.data?.id?.let { claimLocation(it) }
-            }
+    private fun setViewDetails(location: Location, binding: DetailLocationBinding) {
+        binding.detailGarbagePhoto.setImageBitmap(location.photo)
+        binding.locationDetailAddress.text =
+            "${location.name}, ${location.city}"
+        binding.locationDetailLatlng.text =
+            "${location.latitude}, ${location.longitude}"
+        //Format the date
+        binding.creationDate.text =
+            DateFormatter.convertDateFormat(location.createDate.toString())
+        binding.claim.setOnClickListener {
+            location.id?.let { it1 -> claimLocation(it1) }
         }
     }
 
@@ -111,5 +102,20 @@ class DetailLocationFragment(private val marker: Marker) : BottomSheetDialogFrag
             dialog.dismiss()
         }
         dialog.show()
+    }
+
+    private fun readDatabase(locationId: Long, binding: DetailLocationBinding) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val location = homeViewModel.getLocalLocationById(locationId)
+            if (location != null) {
+                setViewDetails(location, binding)
+            } else {
+                val retrievedLocation = homeViewModel.getLocationById(locationId)
+                val convertedLocation =
+                    LocationsMapper.mapLocationDtoToLocation(retrievedLocation.data)
+                homeViewModel.addLocalLocation(convertedLocation)
+                setViewDetails(convertedLocation, binding)
+            }
+        }
     }
 }

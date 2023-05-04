@@ -36,11 +36,20 @@ class ClaimedGarbageFragment : Fragment() {
     }
 
     private fun readDatabase() {
-        //Get data from the database
         viewLifecycleOwner.lifecycleScope.launch {
+            //Send request to check if it there is new data available
+            val locationsNumber = claimedGarbageViewModel.getTotalLocations()
             claimedGarbageViewModel.claimedLocalLocations.observe(viewLifecycleOwner) {
-                if (it.isNotEmpty()) {
+                if (locationsNumber > it.size) {
+                    requestApiData()
+                } else if (it.isNotEmpty()) {
                     claimedGarbageListAdapter.setData(it)
+                } else if (locationsNumber == 0) {
+                    //display it on the screen
+                    Toast.makeText(
+                        requireContext(), "You didn't post any garbage yet",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 } else {
                     requestApiData()
                 }
@@ -54,7 +63,11 @@ class ClaimedGarbageFragment : Fragment() {
             when (response) {
                 is NetworkResult.Success -> {
                     response.data?.let {
-                        claimedGarbageListAdapter.setData(LocationsMapper.mapLocationDtoToClaimedLocation(it))
+                        claimedGarbageListAdapter.setData(
+                            LocationsMapper.mapLocationDtoToClaimedLocation(
+                                it
+                            )
+                        )
                     }
                 }
                 is NetworkResult.Error -> {
@@ -76,6 +89,12 @@ class ClaimedGarbageFragment : Fragment() {
             claimedGarbageViewModel.claimedLocalLocations.observe(viewLifecycleOwner) { locations ->
                 if (locations.isNotEmpty()) {
                     claimedGarbageListAdapter.setData(locations)
+                } else {
+                    //display it on the screen
+                    Toast.makeText(
+                        requireContext(), "You didn't post any garbage yet",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }

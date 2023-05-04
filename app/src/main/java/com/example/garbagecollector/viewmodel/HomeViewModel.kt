@@ -6,14 +6,13 @@ import android.location.Address
 import android.os.Build
 import android.util.Base64
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.example.garbagecollector.mapper.LocationsMapper
 import com.example.garbagecollector.repository.web.dto.LocationDto
 import com.example.garbagecollector.model.State
 import com.example.garbagecollector.repository.local.DataStoreManager
 import com.example.garbagecollector.repository.Repository
+import com.example.garbagecollector.repository.database.model.LocalLocation
 import com.example.garbagecollector.repository.web.NetworkResult
 import com.example.garbagecollector.repository.web.dto.Location
 import com.example.garbagecollector.repository.web.dto.SingleLocationDto
@@ -34,13 +33,22 @@ class HomeViewModel @Inject constructor(
     application: Application
 ) :
     AndroidViewModel(application) {
+    //Room
+    val postedLocalLocations: LiveData<List<LocalLocation>> =
+        repository.localDataStore.findAllLocalLocations().asLiveData()
+
+    private fun offlineCacheLocations(locations: List<LocalLocation>) =
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.localDataStore.insertLocalLocations(locations)
+        }
+
     //Data Store
     private val dataStoreManager = DataStoreManager(application)
     val token = dataStoreManager.userTokenFlow.asLiveData()
     val userId = dataStoreManager.userId.asLiveData()
 
     //Remote
-    var webLocations = MutableLiveData<NetworkResult<List<Location>>>()
+    var remoteLocations = MutableLiveData<NetworkResult<List<Location>>>()
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -66,6 +74,12 @@ class HomeViewModel @Inject constructor(
         repository.remoteDataSource.postLocation(location)
     }
 
+    fun addLocalLocation(location: com.example.garbagecollector.repository.database.model.Location) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.localDataStore.insertLocation(location)
+        }
+    }
+
     suspend fun claimLocation(locationId: Long, claimedUserId: Long) {
         repository.remoteDataSource.claimLocation(locationId, claimedUserId)
     }
@@ -75,22 +89,40 @@ class HomeViewModel @Inject constructor(
             repository.remoteDataSource.getLocationById(locationId)
         }
 
+    suspend fun getLocalLocationById(locationId: Long): com.example.garbagecollector.repository.database.model.Location =
+        withContext(Dispatchers.IO) {
+            repository.localDataStore.findLocationById(locationId)
+        }
+
 
     fun getAllLiveLocations() = viewModelScope.launch {
         getSafeLocationsCall()
     }
 
+    suspend fun getTotalPostedLocationsNumber(): Int = withContext(Dispatchers.IO) {
+        repository.remoteDataSource.getTotalPostedLocations()
+    }
+
     private suspend fun getSafeLocationsCall() {
-        webLocations.value = NetworkResult.Loading()
+        remoteLocations.value = NetworkResult.Loading()
         if (hasInternetConnection(getApplication())) {
             try {
                 val response = repository.remoteDataSource.getLocations()
-                webLocations.value = handleLocationsResponse(response)
+                remoteLocations.value = handleLocationsResponse(response)
+                val localLocationsForSave = remoteLocations.value
+                if (localLocationsForSave != null) {
+                    //Save retrieved locations to ROOM
+                    offlineCacheLocations(
+                        LocationsMapper.mapLocationToLocalLocation(
+                            localLocationsForSave.data
+                        )
+                    )
+                }
             } catch (e: Exception) {
-                webLocations.value = NetworkResult.Error("Locations not found")
+                remoteLocations.value = NetworkResult.Error("Locations not found")
             }
         } else {
-            webLocations.value = NetworkResult.Error("No Internet Connection.")
+            remoteLocations.value = NetworkResult.Error("No Internet Connection.")
         }
     }
 

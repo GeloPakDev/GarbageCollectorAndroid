@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.garbagecollector.R
+import com.example.garbagecollector.mapper.LocationsMapper
 import com.example.garbagecollector.repository.web.NetworkResult
 import com.example.garbagecollector.repository.web.dto.Location
 import com.example.garbagecollector.util.Constants
@@ -63,14 +64,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         setupLocationClient()
     }
 
-
     //Initialization methods
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
         //Get the User's location
         getCurrentLocation()
         //Observe for Location changes
-        requestApiData()
+        readDatabase()
         //Listener for Markers on the map
         showDetailLocation(googleMap)
     }
@@ -99,7 +99,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                     val latLng = LatLng(location.latitude, location.longitude)
                     //Zoom the user to this location
                     val update = CameraUpdateFactory.newLatLngZoom(latLng, 16.0f)
-                    googleMap.animateCamera(update)
+                    googleMap.moveCamera(update)
                 } else {
                     Log.e(Constants.HOME_FRAGMENT_TAG, "No location found!")
                 }
@@ -123,29 +123,50 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun requestApiData() {
+    private fun readDatabase() {
         viewLifecycleOwner.lifecycleScope.launch {
-            //Observe for the markers from the Server
-            homeViewModel.getAllLiveLocations()
-            homeViewModel.webLocations.observe(viewLifecycleOwner) { response ->
-                //Clear all existing markers from the map before retrieving new one
-                googleMap.clear()
-                when (response) {
-                    is NetworkResult.Success -> {
-                        displayAllMarkers(response.data)
-                    }
-                    is NetworkResult.Error -> {
-                        Toast.makeText(
-                            requireContext(), response.message.toString(),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    is NetworkResult.Loading -> {
-                        Toast.makeText(
-                            requireContext(), "Data is Loading..",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+            //Send request to check if it there is new data available
+            val locationsNumber = homeViewModel.getTotalPostedLocationsNumber()
+            homeViewModel.postedLocalLocations.observe(viewLifecycleOwner) {
+                if (locationsNumber > it.size) {
+                    //display the snackbar
+                    requestApiData()
+                } else if (it.isNotEmpty()) {
+                    displayAllMarkers(LocationsMapper.mapLocalLocationToLocation(it))
+                } else if (locationsNumber == 0) {
+                    //display it on the screen
+                    Toast.makeText(
+                        requireContext(), "You didn't post any garbage yet",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    requestApiData()
+                }
+            }
+        }
+    }
+
+    private fun requestApiData() {
+        //Observe for the markers from the Server
+        homeViewModel.getAllLiveLocations()
+        homeViewModel.remoteLocations.observe(viewLifecycleOwner) { response ->
+            //Clear all existing markers from the map before retrieving new one
+            googleMap.clear()
+            when (response) {
+                is NetworkResult.Success -> {
+                    displayAllMarkers(response.data)
+                }
+                is NetworkResult.Error -> {
+                    Toast.makeText(
+                        requireContext(), response.message.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                is NetworkResult.Loading -> {
+                    Toast.makeText(
+                        requireContext(), "Data is Loading..",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }

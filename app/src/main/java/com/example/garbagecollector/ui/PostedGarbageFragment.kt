@@ -38,9 +38,19 @@ class PostedGarbageFragment : Fragment() {
 
     private fun readDatabase() {
         viewLifecycleOwner.lifecycleScope.launch {
+            //Send request to check if it there is new data available
+            val locationsNumber = postedGarbageViewModel.getTotalLocations()
             postedGarbageViewModel.postedLocalLocations.observe(viewLifecycleOwner) {
-                if (it.isNotEmpty()) {
+                if (locationsNumber > it.size) {
+                    requestApiData()
+                } else if (it.isNotEmpty()) {
                     postedGarbageListAdapter.setData(it)
+                } else if (locationsNumber == 0) {
+                    //display it on the screen
+                    Toast.makeText(
+                        requireContext(), "You didn't post any garbage yet",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 } else {
                     requestApiData()
                 }
@@ -62,6 +72,7 @@ class PostedGarbageFragment : Fragment() {
                     }
                 }
                 is NetworkResult.Error -> {
+                    //handle case when user didn't post any garbage
                     loadDataFromCache()
                     Toast.makeText(
                         requireContext(), response.message.toString(),
@@ -80,6 +91,12 @@ class PostedGarbageFragment : Fragment() {
             postedGarbageViewModel.postedLocalLocations.observe(viewLifecycleOwner) { locations ->
                 if (locations.isNotEmpty()) {
                     postedGarbageListAdapter.setData(locations)
+                } else {
+                    //display it on the screen
+                    Toast.makeText(
+                        requireContext(), "You didn't post any garbage yet",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }

@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -35,13 +36,17 @@ class ClaimedGarbageViewModel @Inject constructor(
     //Data Store
     private val dataStoreManager = DataStoreManager(application)
     val token = dataStoreManager.userTokenFlow.asLiveData()
-    val userId = dataStoreManager.userId.asLiveData()
 
     //Remote Storage
     var remoteLocations = MutableLiveData<NetworkResult<List<LocationDto>>>()
 
     fun getLocations() = viewModelScope.launch {
         getLocationsSafeCall()
+    }
+
+    suspend fun getTotalLocations(): Int = withContext(Dispatchers.IO) {
+        val userId = runBlocking { dataStoreManager.userId.first() }
+        repository.remoteDataSource.getTotalClaimedUserLocations(userId)
     }
 
     @SuppressLint("NewApi")

@@ -15,6 +15,15 @@ interface LocationApi {
     @GET("api/locations")
     suspend fun getLocations(): Response<List<Location>>
 
+    @GET("api/locations/total")
+    suspend fun getTotalPostedLocations(): Int
+
+    @GET("api/locations/posted/total")
+    suspend fun getTotalPostedUserLocations(@Query("userId") userId: Long): Int
+
+    @GET("api/locations/claimed/total")
+    suspend fun getTotalClaimedUserLocations(@Query("userId") userId: Long): Int
+
     @POST("api/locations")
     suspend fun postLocation(@Body location: LocationDto): LocationDto
 
