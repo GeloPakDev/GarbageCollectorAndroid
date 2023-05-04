@@ -11,12 +11,21 @@ class RemoteDataSource @Inject constructor(
     private val locationApi: LocationApi,
     private val userApi: UserApi
 ) {
+    //GET METHODS
     suspend fun getLocations(): Response<List<Location>> {
         return locationApi.getLocations()
     }
 
-    suspend fun postLocation(location: LocationDto): LocationDto {
-        return locationApi.postLocation(location)
+    suspend fun getTotalPostedLocations(): Int {
+        return locationApi.getTotalPostedLocations()
+    }
+
+    suspend fun getTotalPostedUserLocations(userId: Long): Int {
+        return locationApi.getTotalPostedUserLocations(userId)
+    }
+
+    suspend fun getTotalClaimedUserLocations(userId: Long): Int {
+        return locationApi.getTotalClaimedUserLocations(userId)
     }
 
     suspend fun getClaimedUserLocations(userId: Long): Response<List<LocationDto>> {
@@ -27,15 +36,17 @@ class RemoteDataSource @Inject constructor(
         return locationApi.getPostedUserLocations(userId)
     }
 
-    suspend fun claimLocation(
-        id: Long,
-        claimedUserId: Long
-    ) {
-        locationApi.claimLocation(id, claimedUserId)
-    }
-
     suspend fun getLocationById(locationId: Long): SingleLocationDto {
         return locationApi.getLocationById(locationId)
+    }
+
+    suspend fun getUserByEmail(email: String): UserDto {
+        return userApi.getUserByEmail(email)
+    }
+
+    //POST METHODS
+    suspend fun postLocation(location: LocationDto): LocationDto {
+        return locationApi.postLocation(location)
     }
 
     suspend fun registerUser(registrationDto: RegistrationDto): User {
@@ -46,7 +57,11 @@ class RemoteDataSource @Inject constructor(
         return userApi.loginUser(loginDto)
     }
 
-    suspend fun getUserByEmail(email: String): UserDto {
-        return userApi.getUserByEmail(email)
+    //PATCH METHODS
+    suspend fun claimLocation(
+        id: Long,
+        claimedUserId: Long
+    ) {
+        locationApi.claimLocation(id, claimedUserId)
     }
 }

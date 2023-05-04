@@ -12,7 +12,6 @@ class PostedLocationsDiffUtil(
         return oldList.size
     }
 
-
     override fun getNewListSize(): Int {
         return newList.size
     }
