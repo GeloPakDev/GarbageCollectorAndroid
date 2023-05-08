@@ -6,7 +6,7 @@
     android:background="@drawable/rounded_corner_dialog">
 
     <TextView
-        android:id="@+id/success"
+        android:id="@+id/network_issues"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -23,9 +23,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="@+id/success"
-        app:layout_constraintStart_toStartOf="@+id/success"
-        app:layout_constraintTop_toBottomOf="@+id/success"
+        app:layout_constraintEnd_toEndOf="@+id/network_issues"
+        app:layout_constraintStart_toStartOf="@+id/network_issues"
+        app:layout_constraintTop_toBottomOf="@+id/network_issues"
         app:srcCompat="@drawable/success" />
 
     <TextView
@@ -51,19 +51,19 @@
         android:layout_marginEnd="16dp"
         android:fontFamily="@font/poppinsmedium"
         android:text="+100"
-        android:textColor="@color/app_green"
+        android:textColor="@color/blue_primary"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="@+id/success_message"
         app:layout_constraintStart_toStartOf="@+id/success_message"
         app:layout_constraintTop_toBottomOf="@+id/success_message" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <Button
         android:id="@+id/ok_button"
-        android:layout_width="wrap_content"
+        android:layout_width="116dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="22dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/rounded_corner"
+        android:background="@drawable/rounded_button_blue"
         android:fontFamily="@font/poppinsregular"
         android:text="OK"
         android:textColor="@color/white"

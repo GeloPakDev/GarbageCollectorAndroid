@@ -1,6 +1,5 @@
 package com.example.garbagecollector.repository.database.model
 
-import android.graphics.Bitmap
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.garbagecollector.model.State
@@ -15,7 +14,7 @@ data class Location(
     var postalCode: Int? = 0,
     var latitude: Double = 0.0,
     var longitude: Double = 0.0,
-    var photo: Bitmap? = null,
+    var photo: String? = null,
     var state: State = State.NEW,
     var createDate: LocalDate? = null,
     var claimDate: LocalDate? = null,

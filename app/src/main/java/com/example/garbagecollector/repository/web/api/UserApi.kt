@@ -5,6 +5,7 @@ import com.example.garbagecollector.repository.web.dto.LoginJWTDto
 import com.example.garbagecollector.repository.web.dto.RegistrationDto
 import com.example.garbagecollector.repository.web.dto.UserDto
 import com.example.garbagecollector.model.User
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -19,6 +20,6 @@ interface UserApi {
     suspend fun loginUser(@Body loginDto: LoginDto): LoginJWTDto
 
     @GET("api/users")
-    suspend fun getUserByEmail(@Query("email") email: String): UserDto
+    suspend fun getUserByEmail(@Query("email") email: String): Response<UserDto>
 
 }

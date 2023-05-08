@@ -6,7 +6,7 @@
     android:background="@drawable/rounded_corner_dialog">
 
     <TextView
-        android:id="@+id/success"
+        android:id="@+id/network_issues"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -23,9 +23,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="@+id/success"
-        app:layout_constraintStart_toStartOf="@+id/success"
-        app:layout_constraintTop_toBottomOf="@+id/success"
+        app:layout_constraintEnd_toEndOf="@+id/network_issues"
+        app:layout_constraintStart_toStartOf="@+id/network_issues"
+        app:layout_constraintTop_toBottomOf="@+id/network_issues"
         app:srcCompat="@drawable/success" />
 
     <TextView
@@ -36,25 +36,38 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
         android:fontFamily="@font/poppinsregular"
-        android:text="Garbage location is successfully submitted!"
+        android:text="@string/success_message1"
         android:textColor="@color/text_gray"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="@+id/success_icon"
         app:layout_constraintStart_toStartOf="@+id/success_icon"
         app:layout_constraintTop_toBottomOf="@+id/success_icon" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/ok_button"
+    <TextView
+        android:id="@+id/success_message2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/rounded_corner"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:fontFamily="@font/poppinsregular"
-        android:text="OK"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/success_message2"
+        android:textColor="@color/text_gray"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="@+id/success_message"
         app:layout_constraintStart_toStartOf="@+id/success_message"
         app:layout_constraintTop_toBottomOf="@+id/success_message" />
+
+    <Button
+        android:id="@+id/ok_button"
+        android:layout_width="116dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="17dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_button_blue"
+        android:fontFamily="@font/poppinsregular"
+        android:text="@string/ok"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/success_message2"
+        app:layout_constraintStart_toStartOf="@+id/success_message2"
+        app:layout_constraintTop_toBottomOf="@+id/success_message2" />
 </androidx.constraintlayout.widget.ConstraintLayout>

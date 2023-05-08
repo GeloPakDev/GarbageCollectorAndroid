@@ -89,13 +89,13 @@
 
 
     <Button
-        android:elevation="0dp"
         android:id="@+id/claim"
-        android:layout_width="wrap_content"
+        android:layout_width="138dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/rounded_corner"
+        android:layout_marginBottom="17dp"
+        android:background="@drawable/rounded_button_blue"
+        android:elevation="0dp"
         android:fontFamily="@font/poppinsregular"
         android:text="@string/claim"
         android:textAlignment="center"
