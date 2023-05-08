@@ -63,7 +63,6 @@ dependencies {
     //Google Maps and Places
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
     implementation 'com.google.android.gms:play-services-location:21.0.1'
-    implementation "com.google.android.libraries.places:places:3.0.0"
     //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
@@ -73,6 +72,8 @@ dependencies {
     kapt "com.google.dagger:hilt-android-compiler:2.44"
     // Data binding
     kapt "androidx.databinding:databinding-common:7.4.2"
+    //Shimmer Effect
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
     kapt "androidx.hilt:hilt-compiler:1.0.0"
     testImplementation 'junit:junit:4.13.2'

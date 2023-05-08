@@ -13,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
@@ -43,10 +44,10 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    suspend fun findUserByEmail(email: String): UserDto =
+    suspend fun findUserByEmail(email: String): Response<UserDto> =
         withContext(Dispatchers.IO) {
             val user = repository.remoteDataSource.getUserByEmail(email)
-            user.data?.id?.let { saveUserIdToDataStore(it) }
+            user.body()?.data?.id?.let { saveUserIdToDataStore(it) }
             user
         }
 

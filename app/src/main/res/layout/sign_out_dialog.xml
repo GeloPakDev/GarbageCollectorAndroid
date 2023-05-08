@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rounded_corner_dialog">
+
+    <TextView
+        android:id="@+id/network_issues"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/poppinsregular"
+        android:text="@string/sign_out"
+        android:textColor="@color/text_black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/success_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="32dp"
+        android:fontFamily="@font/poppinsregular"
+        android:text="@string/sign_out_message1"
+        android:textColor="@color/text_gray"
+        app:layout_constraintEnd_toEndOf="@+id/network_issues"
+        app:layout_constraintStart_toStartOf="@+id/network_issues"
+        app:layout_constraintTop_toBottomOf="@+id/network_issues" />
+
+    <TextView
+        android:id="@+id/sign_out_message2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/poppinsregular"
+        android:text="@string/sign_out_message2"
+        android:textColor="@color/text_gray"
+        app:layout_constraintEnd_toEndOf="@+id/success_icon"
+        app:layout_constraintStart_toStartOf="@+id/success_icon"
+        app:layout_constraintTop_toBottomOf="@+id/success_icon" />
+
+    <Button
+        android:id="@+id/ok_button"
+        android:layout_width="155dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_button_blue"
+        android:fontFamily="@font/poppinsregular"
+        android:text="@string/sign_out"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/sign_out_message2"
+        app:layout_constraintStart_toStartOf="@+id/sign_out_message2"
+        app:layout_constraintTop_toBottomOf="@+id/sign_out_message2" />
+
+    <Button
+        android:id="@+id/cancel_button"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="155dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="@font/poppinsregular"
+        android:text="@string/cancel"
+        android:textAllCaps="false"
+        android:textColor="@color/blue_primary"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/ok_button"
+        app:layout_constraintStart_toStartOf="@+id/ok_button"
+        app:layout_constraintTop_toBottomOf="@+id/ok_button"
+        app:layout_goneMarginBottom="16dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>
