@@ -34,8 +34,8 @@ import java.util.*
 
 @AndroidEntryPoint
 class PostLocationFragment(bitmap: Bitmap) : BottomSheetDialogFragment() {
-
-    private lateinit var binding: PostLocationBinding
+    private var _binding: PostLocationBinding? = null
+    private val binding get() = _binding!!
     //Get current user's location
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private val garbagePhoto: Bitmap = bitmap
@@ -50,7 +50,7 @@ class PostLocationFragment(bitmap: Bitmap) : BottomSheetDialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = PostLocationBinding.inflate(inflater)
+        _binding = PostLocationBinding.inflate(inflater)
         //If user open camera from different fragment navigate him to the homeFragment
         findNavController().navigate(R.id.homeFragment)
         binding.detailGarbagePhoto.setImageBitmap(garbagePhoto)
@@ -130,5 +130,10 @@ class PostLocationFragment(bitmap: Bitmap) : BottomSheetDialogFragment() {
             dialog.dismiss()
         }
         dialog.show()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

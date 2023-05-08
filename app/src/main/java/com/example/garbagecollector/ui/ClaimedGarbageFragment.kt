@@ -30,16 +30,22 @@ class ClaimedGarbageFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentClaimedGarbageBinding.inflate(inflater)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         readDatabase()
-        return binding.root
     }
 
     private fun readDatabase() {
         viewLifecycleOwner.lifecycleScope.launch {
             //Send request to check if it there is new data available
             val locationsNumber = claimedGarbageViewModel.getTotalLocations()
+            //Observe localLocations
             claimedGarbageViewModel.claimedLocalLocations.observe(viewLifecycleOwner) {
+                //Get new data from the server if it is added
                 if (locationsNumber > it.size) {
                     requestApiData()
                 } else if (it.isNotEmpty()) {
@@ -50,8 +56,6 @@ class ClaimedGarbageFragment : Fragment() {
                         requireContext(), "You didn't post any garbage yet",
                         Toast.LENGTH_SHORT
                     ).show()
-                } else {
-                    requestApiData()
                 }
             }
         }
@@ -82,7 +86,6 @@ class ClaimedGarbageFragment : Fragment() {
             }
         }
     }
-
 
     private fun loadDataFromCache() {
         viewLifecycleOwner.lifecycleScope.launch {

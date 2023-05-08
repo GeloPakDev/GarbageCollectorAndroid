@@ -15,13 +15,14 @@ import com.example.garbagecollector.databinding.NotSignedInBinding
 
 
 class NotSignedInFragment : Fragment() {
-    private lateinit var binding: NotSignedInBinding
+    private var _binding: NotSignedInBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = NotSignedInBinding.inflate(inflater)
+        _binding = NotSignedInBinding.inflate(inflater)
         setUpSignInLink()
         return binding.root
     }
@@ -38,5 +39,10 @@ class NotSignedInFragment : Fragment() {
         spannableString.setSpan(clickableSpan, 23, 30, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         binding.notSignIn.setText(spannableString, TextView.BufferType.SPANNABLE)
         binding.notSignIn.movementMethod = LinkMovementMethod.getInstance()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }
