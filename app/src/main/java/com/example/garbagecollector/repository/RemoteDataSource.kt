@@ -16,7 +16,7 @@ class RemoteDataSource @Inject constructor(
         return locationApi.getLocations()
     }
 
-    suspend fun getTotalPostedLocations(): Int {
+    suspend fun getTotalPostedLocations(): Response<Int> {
         return locationApi.getTotalPostedLocations()
     }
 
@@ -40,7 +40,7 @@ class RemoteDataSource @Inject constructor(
         return locationApi.getLocationById(locationId)
     }
 
-    suspend fun getUserByEmail(email: String): UserDto {
+    suspend fun getUserByEmail(email: String): Response<UserDto> {
         return userApi.getUserByEmail(email)
     }
 

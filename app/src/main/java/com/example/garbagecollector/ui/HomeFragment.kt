@@ -2,19 +2,26 @@ package com.example.garbagecollector.ui
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.garbagecollector.R
+import com.example.garbagecollector.databinding.HomeBinding
 import com.example.garbagecollector.mapper.LocationsMapper
 import com.example.garbagecollector.repository.web.NetworkResult
 import com.example.garbagecollector.repository.web.dto.Location
@@ -22,11 +29,16 @@ import com.example.garbagecollector.util.Constants
 import com.example.garbagecollector.viewmodel.HomeViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), OnMapReadyCallback {
@@ -36,6 +48,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     //To get current User's location
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private val homeViewModel by viewModels<HomeViewModel>()
+
+    private val binding get() = _binding!!
+    private var _binding: HomeBinding? = null
 
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -51,7 +66,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.home, container, false)
+        _binding = HomeBinding.inflate(inflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -126,21 +142,35 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private fun readDatabase() {
         viewLifecycleOwner.lifecycleScope.launch {
             //Send request to check if it there is new data available
-            val locationsNumber = homeViewModel.getTotalPostedLocationsNumber()
-            homeViewModel.postedLocalLocations.observe(viewLifecycleOwner) {
-                if (locationsNumber > it.size) {
-                    //display the snackbar
-                    requestApiData()
-                } else if (it.isNotEmpty()) {
-                    displayAllMarkers(LocationsMapper.mapLocalLocationToLocation(it))
-                } else if (locationsNumber == 0) {
-                    //display it on the screen
-                    Toast.makeText(
-                        requireContext(), "You didn't post any garbage yet",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else {
-                    requestApiData()
+            homeViewModel.getTotalPostedLocations()
+            homeViewModel.remoteTotalLocationsNumber.observe(viewLifecycleOwner) { remote ->
+                //Clear all existing markers from the map before retrieving new one
+                when (remote) {
+                    is NetworkResult.Success -> {
+                        homeViewModel.getAllLocalLocations()
+                        homeViewModel.postedLocalLocations.observe(viewLifecycleOwner) { local ->
+                            if (remote.data!! > local.size) {
+                                displayAllMarkers(LocationsMapper.mapLocalLocationToLocation(local))
+                                setupSnackBar()
+                            } else if (local.isNotEmpty()) {
+                                displayAllMarkers(LocationsMapper.mapLocalLocationToLocation(local))
+                            } else if (remote.data == 0) {
+                                //display it on the screen
+                                Toast.makeText(
+                                    requireContext(), "You didn't post any garbage yet",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                requestApiData()
+                            }
+                        }
+                    }
+                    is NetworkResult.Error -> {
+                        if (remote.message.toString() == "No Internet Connection.") {
+                            showNetworkIssueDialog()
+                        }
+                    }
+                    is NetworkResult.Loading -> {}
                 }
             }
         }
@@ -154,34 +184,67 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             googleMap.clear()
             when (response) {
                 is NetworkResult.Success -> {
+                    //add method to show dismiss the dialog of loading the icons
                     displayAllMarkers(response.data)
                 }
                 is NetworkResult.Error -> {
-                    Toast.makeText(
-                        requireContext(), response.message.toString(),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    if (response.message.toString() == "No Internet Connection.") {
+                        showNetworkIssueDialog()
+                    }
                 }
                 is NetworkResult.Loading -> {
-                    Toast.makeText(
-                        requireContext(), "Data is Loading..",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    //show the dialog of uploading the locations
                 }
             }
         }
     }
 
-
     private fun showDetailLocation(googleMap: GoogleMap) {
         viewLifecycleOwner.lifecycleScope.launch {
             googleMap.setOnMarkerClickListener {
                 val detailLocationFragment = DetailLocationFragment(it)
-                detailLocationFragment.show(childFragmentManager, "TAG")
-                val cameraUpdate = CameraUpdateFactory.newLatLngZoom(it.position, 16.0f)
-                googleMap.animateCamera(cameraUpdate)
+                detailLocationFragment.show(parentFragmentManager, "TAG")
                 false
             }
         }
+    }
+
+    private fun showNetworkIssueDialog() {
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setContentView(R.layout.network_issues_dialog)
+        val okButton = dialog.findViewById<AppCompatButton>(R.id.ok_button)
+        okButton.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    @SuppressLint("MissingInflatedId", "InflateParams")
+    private fun setupSnackBar() {
+        val snackBar = Snackbar.make(requireView(), "", Snackbar.LENGTH_INDEFINITE)
+        val customSnackView: View = layoutInflater.inflate(R.layout.locations_snackbar, null)
+        snackBar.view.setBackgroundColor(Color.TRANSPARENT)
+        val snackBarLayout = snackBar.view as Snackbar.SnackbarLayout
+
+        val reload: Button = customSnackView.findViewById(R.id.reload_button)
+
+        snackBar.anchorView =
+            requireActivity().findViewById(R.id.bottomNavigationView)
+
+        reload.setOnClickListener {
+            requestApiData()
+            snackBar.dismiss()
+        }
+
+        snackBarLayout.addView(customSnackView, 0)
+        snackBar.show()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

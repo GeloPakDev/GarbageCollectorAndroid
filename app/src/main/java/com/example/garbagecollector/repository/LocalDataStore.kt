@@ -18,7 +18,7 @@ class LocalDataStore @Inject constructor(
     private val localLocationDao: LocalLocationDao
 ) {
     //READ METHODS
-    fun findAllLocalLocations(): Flow<List<LocalLocation>> {
+    fun findAllLocalLocations(): List<LocalLocation> {
         return localLocationDao.findAllLocalLocations()
     }
 
@@ -33,6 +33,7 @@ class LocalDataStore @Inject constructor(
     fun findLocationById(locationId: Long): Location {
         return locationDao.findLocationById(locationId)
     }
+
     //CREATE METHODS
     fun insertLocation(location: Location) {
         locationDao.create(location)
@@ -48,5 +49,14 @@ class LocalDataStore @Inject constructor(
 
     fun insertLocalLocations(localLocations: List<LocalLocation>) {
         localLocationDao.insertLocalLocations(localLocations)
+    }
+
+    //DELETE METHODS
+    fun deleteLocationById(id: Long) {
+        locationDao.deleteLocationById(id)
+    }
+
+    fun deleteLocalLocationById(id: Long) {
+        localLocationDao.deleteLocalLocationById(id)
     }
 }

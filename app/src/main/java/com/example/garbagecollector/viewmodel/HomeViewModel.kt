@@ -17,12 +17,12 @@ import com.example.garbagecollector.repository.web.NetworkResult
 import com.example.garbagecollector.repository.web.dto.Location
 import com.example.garbagecollector.repository.web.dto.SingleLocationDto
 import com.example.garbagecollector.util.NetworkConnectivity.Companion.hasInternetConnection
+import com.example.garbagecollector.util.ResponseHandler
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.time.LocalDate
 import javax.inject.Inject
@@ -33,14 +33,8 @@ class HomeViewModel @Inject constructor(
     application: Application
 ) :
     AndroidViewModel(application) {
-    //Room
-    val postedLocalLocations: LiveData<List<LocalLocation>> =
-        repository.localDataStore.findAllLocalLocations().asLiveData()
-
-    private fun offlineCacheLocations(locations: List<LocalLocation>) =
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.localDataStore.insertLocalLocations(locations)
-        }
+    //Local
+    var postedLocalLocations = MutableLiveData<List<LocalLocation>>()
 
     //Data Store
     private val dataStoreManager = DataStoreManager(application)
@@ -49,8 +43,10 @@ class HomeViewModel @Inject constructor(
 
     //Remote
     var remoteLocations = MutableLiveData<NetworkResult<List<Location>>>()
+    var remoteTotalLocationsNumber = MutableLiveData<NetworkResult<Int>>()
 
 
+    //Remote Calls
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addLocation(latLng: LatLng, address: Address?, garbagePhoto: Bitmap) {
         val location = LocationDto()
@@ -74,33 +70,35 @@ class HomeViewModel @Inject constructor(
         repository.remoteDataSource.postLocation(location)
     }
 
-    fun addLocalLocation(location: com.example.garbagecollector.repository.database.model.Location) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.localDataStore.insertLocation(location)
-        }
-    }
-
-    suspend fun claimLocation(locationId: Long, claimedUserId: Long) {
-        repository.remoteDataSource.claimLocation(locationId, claimedUserId)
-    }
-
     suspend fun getLocationById(locationId: Long): SingleLocationDto =
         withContext(Dispatchers.IO) {
             repository.remoteDataSource.getLocationById(locationId)
         }
 
-    suspend fun getLocalLocationById(locationId: Long): com.example.garbagecollector.repository.database.model.Location =
-        withContext(Dispatchers.IO) {
-            repository.localDataStore.findLocationById(locationId)
-        }
-
-
     fun getAllLiveLocations() = viewModelScope.launch {
         getSafeLocationsCall()
     }
 
-    suspend fun getTotalPostedLocationsNumber(): Int = withContext(Dispatchers.IO) {
-        repository.remoteDataSource.getTotalPostedLocations()
+    fun getTotalPostedLocations() =
+        viewModelScope.launch {
+            getTotalPostedLocationsNumber()
+        }
+
+
+    suspend fun getTotalPostedLocationsNumber() {
+        remoteTotalLocationsNumber.value = NetworkResult.Loading()
+
+        if (hasInternetConnection(getApplication())) {
+            try {
+                val response = repository.remoteDataSource.getTotalPostedLocations()
+                remoteTotalLocationsNumber.value =
+                    ResponseHandler.handlePostedLocationsNumberResponse(response)
+            } catch (e: Exception) {
+                remoteTotalLocationsNumber.value = NetworkResult.Error("Locations not found")
+            }
+        } else {
+            remoteTotalLocationsNumber.value = NetworkResult.Error("No Internet Connection.")
+        }
     }
 
     private suspend fun getSafeLocationsCall() {
@@ -108,7 +106,7 @@ class HomeViewModel @Inject constructor(
         if (hasInternetConnection(getApplication())) {
             try {
                 val response = repository.remoteDataSource.getLocations()
-                remoteLocations.value = handleLocationsResponse(response)
+                remoteLocations.value = ResponseHandler.handleLocationsResponse(response)
                 val localLocationsForSave = remoteLocations.value
                 if (localLocationsForSave != null) {
                     //Save retrieved locations to ROOM
@@ -126,24 +124,37 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun handleLocationsResponse(response: Response<List<Location>>): NetworkResult<List<Location>> {
-        when {
-            response.message().toString().contains("timeout") -> {
-                return NetworkResult.Error("Timeout")
-            }
-            response.code() == 402 -> {
-                return NetworkResult.Error("API Key Limited")
-            }
-            response.body()!!.isEmpty() -> {
-                return NetworkResult.Error("Locations Not Found")
-            }
-            response.isSuccessful -> {
-                val foodRecipes = response.body()
-                return NetworkResult.Success(foodRecipes!!)
-            }
-            else -> {
-                return NetworkResult.Error(response.message())
-            }
+    //Local Calls
+    fun addLocalLocation(location: com.example.garbagecollector.repository.database.model.Location) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.localDataStore.insertLocation(location)
         }
     }
+
+    suspend fun claimLocation(locationId: Long, claimedUserId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.localDataStore.deleteLocalLocationById(locationId)
+            repository.localDataStore.deleteLocationById(locationId)
+        }
+        repository.remoteDataSource.claimLocation(locationId, claimedUserId)
+    }
+
+    suspend fun getLocalLocationById(locationId: Long): com.example.garbagecollector.repository.database.model.Location =
+        withContext(Dispatchers.IO) {
+            repository.localDataStore.findLocationById(locationId)
+        }
+
+    fun getAllLocalLocations() = viewModelScope.launch {
+        val locations = getLocalLocations()
+        postedLocalLocations.value = locations
+    }
+
+    private suspend fun getLocalLocations(): List<LocalLocation> = withContext(Dispatchers.IO) {
+        repository.localDataStore.findAllLocalLocations()
+    }
+
+    private fun offlineCacheLocations(locations: List<LocalLocation>) =
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.localDataStore.insertLocalLocations(locations)
+        }
 }
