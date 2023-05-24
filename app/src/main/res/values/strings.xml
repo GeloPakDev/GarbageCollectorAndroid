@@ -7,7 +7,9 @@
     <string name="post">Post</string>
     <string name="copy">copy</string>
     <string name="claim">Claim</string>
+    <string name="save">Save</string>
     <string name="sign_out">Sign Out</string>
+    <string name="share_activity">Share my activity</string>
     <string name="cancel">Cancel</string>
     <string name="network_issues">Network issues</string>
     <string name="network_issues_message1">Please, check your network</string>
@@ -29,7 +31,42 @@
     <string name="login_failed">"Login failed"</string>
     <string name="sign_up_title">Don’t have an account? Sign Up</string>
     <string name="success">Success</string>
-    <string name="ok">Try again</string>
+    <string name="ok">OK</string>
+    <string name="try_again">Try again</string>
     <string name="new_locations">New locations are available!</string>
     <string name="reload">Reload</string>
+    <string-array name="uzbekistan_cities">
+        <item>Tashkent</item>
+        <item>Samarkand</item>
+        <item>Bukhara</item>
+        <item>Khiva</item>
+        <item>Andijan</item>
+        <item>Nukus</item>
+        <item>Navoi</item>
+        <item>Fergana</item>
+        <item>Urgench</item>
+        <item>Termez</item>
+        <item>Qarshi</item>
+        <item>Chirchiq</item>
+        <item>Namangan</item>
+        <item>Shahrisabz</item>
+        <item>Kokand</item>
+        <item>Angren</item>
+        <item>Qo‘qon</item>
+        <item>Guliston</item>
+        <item>Zarafshan</item>
+        <item>Turkestan</item>
+    </string-array>
+
+    <string-array name="tashkent_districts">
+        <item>Almazar</item>
+        <item>Bektemir</item>
+        <item>Chilanzar</item>
+        <item>Mirzo-Ulugbek</item>
+        <item>Sergeli</item>
+        <item>Shaykhontohur</item>
+        <item>Yakkasaray</item>
+        <item>Yashnabad</item>
+        <item>Yunusabad</item>
+    </string-array>
 </resources>
