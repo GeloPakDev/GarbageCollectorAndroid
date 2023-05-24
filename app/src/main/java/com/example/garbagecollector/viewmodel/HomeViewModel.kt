@@ -85,7 +85,7 @@ class HomeViewModel @Inject constructor(
         }
 
 
-    suspend fun getTotalPostedLocationsNumber() {
+    private suspend fun getTotalPostedLocationsNumber() {
         remoteTotalLocationsNumber.value = NetworkResult.Loading()
 
         if (hasInternetConnection(getApplication())) {

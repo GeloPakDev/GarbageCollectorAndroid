@@ -21,8 +21,8 @@ class MyGarbageActivity : AppCompatActivity() {
         val toolbar = binding.toolbar
         val viewPager = binding.tabViewpager
         val tabLayout = binding.tabTablayout
-        binding.backButton.setOnClickListener{
-            val intent = Intent(this , MainActivity::class.java)
+        binding.backButton.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
         }

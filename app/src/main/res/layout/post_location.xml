@@ -57,12 +57,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="76dp"
+        android:layout_marginEnd="16dp"
         android:hint="Label"
         app:boxCornerRadiusBottomEnd="10dp"
         app:boxCornerRadiusBottomStart="10dp"
         app:boxCornerRadiusTopEnd="10dp"
         app:boxCornerRadiusTopStart="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/garbage_photo">
 
@@ -73,32 +74,22 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <ImageView
-        android:id="@+id/current_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/first_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/first_name"
-        app:layout_constraintTop_toTopOf="@id/first_name"
-        app:srcCompat="@drawable/location" />
-
-    <androidx.appcompat.widget.AppCompatButton
+    <Button
         android:id="@+id/post_button"
-        android:layout_width="wrap_content"
+        android:layout_width="126dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/rounded_corner"
+        android:layout_marginTop="34dp"
+        android:layout_marginBottom="17dp"
+        android:background="@drawable/rounded_button_blue"
+        android:elevation="0dp"
         android:fontFamily="@font/poppinsregular"
         android:text="@string/post"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/first_name" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

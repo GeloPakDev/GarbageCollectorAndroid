@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -86,12 +87,17 @@ class ProfileFragment : Fragment() {
             setStatisticsLitItemListener(position)
         }
 
-        settingsListView.setOnItemClickListener { parent, view, position, id ->
-            setSettingsLitItemListener(position)
-        }
+//        settingsListView.setOnItemClickListener { parent, view, position, id ->
+//            setSettingsLitItemListener(position)
+//        }
 
         othersListView.setOnItemClickListener { parent, view, position, id ->
             setOthersLitItemListener(position)
+        }
+
+        binding.edit.setOnClickListener {
+            val intent = Intent(activity, ProfileEditActivity::class.java)
+            startActivity(intent)
         }
 
         return binding.root
@@ -127,8 +133,10 @@ class ProfileFragment : Fragment() {
     private fun setOthersLitItemListener(listItemPosition: Int) {
         when (othersListViewAdapter?.getItem(listItemPosition).toString()) {
             "About App" -> {
-                val intent = Intent(activity, MyGarbageActivity::class.java)
-                startActivity(intent)
+                val toast = Toast.makeText(requireContext(), "About App", Toast.LENGTH_SHORT)
+                toast.show()
+//                val intent = Intent(activity, MyGarbageActivity::class.java)
+//                startActivity(intent)
             }
             "Sign Out" -> {
                 showSuccessDialog()
