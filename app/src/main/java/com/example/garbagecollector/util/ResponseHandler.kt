@@ -1,5 +1,6 @@
 package com.example.garbagecollector.util
 
+import com.example.garbagecollector.model.User
 import com.example.garbagecollector.repository.web.NetworkResult
 import com.example.garbagecollector.repository.web.dto.Location
 import retrofit2.Response
@@ -20,6 +21,26 @@ class ResponseHandler {
                 response.isSuccessful -> {
                     val locations = response.body()
                     return NetworkResult.Success(locations!!)
+                }
+                else -> {
+                    return NetworkResult.Error(response.message())
+                }
+            }
+        }
+        fun handleUsersResponse(response: Response<List<User>>): NetworkResult<List<User>> {
+            when {
+                response.message().toString().contains("timeout") -> {
+                    return NetworkResult.Error("Timeout")
+                }
+                response.code() == 402 -> {
+                    return NetworkResult.Error("API Key Limited")
+                }
+                response.body()!!.isEmpty() -> {
+                    return NetworkResult.Error("Locations Not Found")
+                }
+                response.isSuccessful -> {
+                    val users = response.body()
+                    return NetworkResult.Success(users!!)
                 }
                 else -> {
                     return NetworkResult.Error(response.message())

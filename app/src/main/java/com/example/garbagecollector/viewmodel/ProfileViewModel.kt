@@ -3,15 +3,14 @@ package com.example.garbagecollector.viewmodel
 import android.app.Application
 import androidx.lifecycle.*
 import com.example.garbagecollector.repository.Repository
-import com.example.garbagecollector.repository.web.dto.LoginDto
-import com.example.garbagecollector.repository.web.dto.LoginJWTDto
-import com.example.garbagecollector.repository.web.dto.RegistrationDto
-import com.example.garbagecollector.repository.web.dto.UserDto
 
 import com.example.garbagecollector.repository.local.DataStoreManager
+import com.example.garbagecollector.repository.web.dto.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 import javax.inject.Inject
@@ -62,6 +61,13 @@ class ProfileViewModel @Inject constructor(
     private fun saveUserIdToDataStore(userId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             dataStoreManager.saveUserId(userId)
+        }
+    }
+
+    fun updateUser(userDto: UpdateUserDto) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val userId = runBlocking { dataStoreManager.userId.first() }
+            repository.remoteDataSource.updateUser(userDto, userId)
         }
     }
 

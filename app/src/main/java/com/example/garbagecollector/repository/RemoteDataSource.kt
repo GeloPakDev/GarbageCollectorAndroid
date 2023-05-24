@@ -24,6 +24,14 @@ class RemoteDataSource @Inject constructor(
         return locationApi.getTotalPostedUserLocations(userId)
     }
 
+    suspend fun getUserPoints(userId: Long): Int {
+        return userApi.getUserPoints(userId)
+    }
+
+    suspend fun getAllUsersByPoints(): Response<List<User>> {
+        return userApi.getAllUsersByPoints()
+    }
+
     suspend fun getTotalClaimedUserLocations(userId: Long): Int {
         return locationApi.getTotalClaimedUserLocations(userId)
     }
@@ -63,5 +71,9 @@ class RemoteDataSource @Inject constructor(
         claimedUserId: Long
     ) {
         locationApi.claimLocation(id, claimedUserId)
+    }
+
+    suspend fun updateUser(userDto: UpdateUserDto, userId: Long) {
+        userApi.updateUser(userDto, userId)
     }
 }
