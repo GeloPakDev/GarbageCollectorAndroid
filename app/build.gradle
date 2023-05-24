@@ -74,6 +74,11 @@ dependencies {
     kapt "androidx.databinding:databinding-common:7.4.2"
     //Shimmer Effect
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
+    //Pie chart
+    implementation 'com.github.blackfizz:eazegraph:1.2.5l@aar'
+    implementation 'com.nineoldandroids:library:2.4.0'
+    //Leak Canary
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
 
     kapt "androidx.hilt:hilt-compiler:1.0.0"
     testImplementation 'junit:junit:4.13.2'
