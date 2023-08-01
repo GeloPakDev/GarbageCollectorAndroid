@@ -1,11 +1,11 @@
-package com.example.garbagecollector.util
+package com.example.garbagecollector.util.recyclerview
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.garbagecollector.repository.database.model.ClaimedLocation
+import com.example.garbagecollector.repository.database.model.PostedLocation
 
-class ClaimedLocationsDiffUtil(
-    private val oldList: List<ClaimedLocation>,
-    private val newList: List<ClaimedLocation>
+class PostedLocationsDiffUtil(
+    private val oldList: List<PostedLocation>,
+    private val newList: List<PostedLocation>
 ) :
     DiffUtil.Callback() {
     override fun getOldListSize(): Int {

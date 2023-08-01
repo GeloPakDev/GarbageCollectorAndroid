@@ -16,8 +16,8 @@ import com.example.garbagecollector.repository.database.model.LocalLocation
 import com.example.garbagecollector.repository.web.NetworkResult
 import com.example.garbagecollector.repository.web.dto.Location
 import com.example.garbagecollector.repository.web.dto.SingleLocationDto
-import com.example.garbagecollector.util.NetworkConnectivity.Companion.hasInternetConnection
-import com.example.garbagecollector.util.ResponseHandler
+import com.example.garbagecollector.util.network.NetworkConnectivity.Companion.hasInternetConnection
+import com.example.garbagecollector.util.network.ResponseHandler
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

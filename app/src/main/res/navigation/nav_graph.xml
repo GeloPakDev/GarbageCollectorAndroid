@@ -28,6 +28,5 @@
         android:id="@+id/notSignedInFragment"
         android:name="com.example.garbagecollector.ui.NotSignedInFragment"
         android:label="NotSignedInFragment"
-        tools:layout="@layout/not_signed_in">
-    </fragment>
+        tools:layout="@layout/not_signed_in" />
 </navigation>

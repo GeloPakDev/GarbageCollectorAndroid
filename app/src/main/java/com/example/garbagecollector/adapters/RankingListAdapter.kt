@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.garbagecollector.databinding.RatingListItemBinding
 import com.example.garbagecollector.model.User
-import com.example.garbagecollector.util.RankingDiffUtil
+import com.example.garbagecollector.util.recyclerview.RankingDiffUtil
 
 class RankingListAdapter : RecyclerView.Adapter<RankingListAdapter.ViewHolder>() {
     private var userList = emptyList<User>()

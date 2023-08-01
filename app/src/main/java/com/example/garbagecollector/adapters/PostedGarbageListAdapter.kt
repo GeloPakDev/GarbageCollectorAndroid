@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.garbagecollector.databinding.PostedGarbageListItemBinding
 import com.example.garbagecollector.repository.database.model.PostedLocation
-import com.example.garbagecollector.util.PostedLocationsDiffUtil
+import com.example.garbagecollector.util.recyclerview.PostedLocationsDiffUtil
 
 class PostedGarbageListAdapter : RecyclerView.Adapter<PostedGarbageListAdapter.ViewHolder>() {
 

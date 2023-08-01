@@ -1,4 +1,4 @@
-package com.example.garbagecollector.util
+package com.example.garbagecollector.util.recyclerview
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.garbagecollector.repository.web.dto.LocationDto

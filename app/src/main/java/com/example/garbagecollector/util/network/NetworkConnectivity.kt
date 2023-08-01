@@ -1,4 +1,4 @@
-package com.example.garbagecollector.util
+package com.example.garbagecollector.util.network
 
 import android.annotation.SuppressLint
 import android.app.Application

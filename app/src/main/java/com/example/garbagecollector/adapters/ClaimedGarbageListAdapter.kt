@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.garbagecollector.databinding.ClaimedGarbageListItemBinding
 import com.example.garbagecollector.repository.database.model.ClaimedLocation
-import com.example.garbagecollector.util.ClaimedLocationsDiffUtil
+import com.example.garbagecollector.util.recyclerview.ClaimedLocationsDiffUtil
 
 class ClaimedGarbageListAdapter : RecyclerView.Adapter<ClaimedGarbageListAdapter.ViewHolder>() {
 

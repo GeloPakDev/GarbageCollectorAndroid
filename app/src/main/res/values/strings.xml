@@ -35,6 +35,7 @@
     <string name="try_again">Try again</string>
     <string name="new_locations">New locations are available!</string>
     <string name="reload">Reload</string>
+    <string name="full_name">Full name</string>
     <string-array name="uzbekistan_cities">
         <item>Tashkent</item>
         <item>Samarkand</item>

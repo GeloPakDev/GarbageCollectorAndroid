@@ -44,6 +44,7 @@ import kotlinx.coroutines.launch
 class HomeFragment : Fragment(), OnMapReadyCallback {
     //To control and query the map
     private lateinit var googleMap: GoogleMap
+    private lateinit var mapFragment: SupportMapFragment
 
     //To get current User's location
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
@@ -73,7 +74,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        val mapFragment = childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
+        mapFragment = childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
         //set up the map and create Google Map object
         mapFragment.getMapAsync(this)
 
@@ -243,7 +244,16 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         snackBar.show()
     }
 
+    private fun clearMap() {
+        if (::mapFragment.isInitialized) {
+            childFragmentManager.beginTransaction().remove(mapFragment).commitAllowingStateLoss()
+            googleMap.clear()
+        }
+    }
+
+
     override fun onDestroyView() {
+        clearMap()
         super.onDestroyView()
         _binding = null
     }

@@ -1,4 +1,4 @@
-package com.example.garbagecollector.util
+package com.example.garbagecollector.util.network
 
 import com.example.garbagecollector.model.User
 import com.example.garbagecollector.repository.web.NetworkResult

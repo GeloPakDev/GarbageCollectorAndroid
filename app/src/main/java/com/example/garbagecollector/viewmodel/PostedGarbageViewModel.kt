@@ -9,7 +9,7 @@ import com.example.garbagecollector.repository.database.model.PostedLocation
 import com.example.garbagecollector.repository.local.DataStoreManager
 import com.example.garbagecollector.repository.web.NetworkResult
 import com.example.garbagecollector.repository.web.dto.LocationDto
-import com.example.garbagecollector.util.NetworkConnectivity.Companion.hasInternetConnection
+import com.example.garbagecollector.util.network.NetworkConnectivity.Companion.hasInternetConnection
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first

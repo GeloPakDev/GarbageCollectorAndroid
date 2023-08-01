@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.garbagecollector.model.User
 import com.example.garbagecollector.repository.Repository
 import com.example.garbagecollector.repository.web.NetworkResult
-import com.example.garbagecollector.util.NetworkConnectivity
-import com.example.garbagecollector.util.ResponseHandler
+import com.example.garbagecollector.util.network.NetworkConnectivity
+import com.example.garbagecollector.util.network.ResponseHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

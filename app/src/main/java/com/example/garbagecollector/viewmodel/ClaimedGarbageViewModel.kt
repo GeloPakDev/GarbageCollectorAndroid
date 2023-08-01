@@ -2,7 +2,7 @@ package com.example.garbagecollector.viewmodel
 
 import android.annotation.SuppressLint
 import android.app.Application
-import com.example.garbagecollector.util.NetworkConnectivity.Companion.hasInternetConnection
+import com.example.garbagecollector.util.network.NetworkConnectivity.Companion.hasInternetConnection
 import androidx.lifecycle.*
 import com.example.garbagecollector.mapper.LocationsMapper
 import com.example.garbagecollector.repository.Repository
