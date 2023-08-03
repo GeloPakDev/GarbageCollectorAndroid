@@ -19,12 +19,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.garbagecollector.R
 import com.example.garbagecollector.databinding.ProfileBinding
+import com.example.garbagecollector.util.findTopNavController
 import com.example.garbagecollector.viewmodel.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class ProfileFragment : Fragment() {
+class ProfileFragment : Fragment(R.layout.profile) {
     private var _binding: ProfileBinding? = null
     private val binding get() = _binding!!
 
@@ -48,7 +49,7 @@ class ProfileFragment : Fragment() {
         profileViewModel.token.observe(viewLifecycleOwner) { token ->
             //If token is empty user is not signed in or registered yet
             if (token.isEmpty()) {
-                findNavController().navigate(R.id.notSignedInFragment)
+//                findNavController().navigate(R.id.notSignedInFragment)
             } else {
                 //Get the email from the DataStore and find user by email
                 profileViewModel.email.observe(viewLifecycleOwner) { email ->
@@ -107,26 +108,18 @@ class ProfileFragment : Fragment() {
     private fun setStatisticsLitItemListener(listItemPosition: Int) {
         when (statisticsListViewAdapter?.getItem(listItemPosition).toString()) {
             "My Garbage" -> {
-                val intent = Intent(activity, MyGarbageActivity::class.java)
-                startActivity(intent)
+                findTopNavController().navigate(R.id.myGarbageFragment)
             }
             "Ranking" -> {
-                val intent = Intent(activity, RankingActivity::class.java)
-                startActivity(intent)
+                findTopNavController().navigate(R.id.myRankingFragment)
             }
         }
     }
 
     private fun setSettingsLitItemListener(listItemPosition: Int) {
         when (settingsListViewAdapter?.getItem(listItemPosition).toString()) {
-            "Change Language" -> {
-                val intent = Intent(activity, MyGarbageActivity::class.java)
-                startActivity(intent)
-            }
-            "Notifications" -> {
-                val intent = Intent(activity, RankingActivity::class.java)
-                startActivity(intent)
-            }
+            "Change Language" -> {}
+            "Notifications" -> {}
         }
     }
 
@@ -135,8 +128,6 @@ class ProfileFragment : Fragment() {
             "About App" -> {
                 val toast = Toast.makeText(requireContext(), "About App", Toast.LENGTH_SHORT)
                 toast.show()
-//                val intent = Intent(activity, MyGarbageActivity::class.java)
-//                startActivity(intent)
             }
             "Sign Out" -> {
                 showSuccessDialog()

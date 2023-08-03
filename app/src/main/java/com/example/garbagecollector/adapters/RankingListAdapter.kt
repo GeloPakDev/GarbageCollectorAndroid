@@ -8,6 +8,9 @@ import com.example.garbagecollector.databinding.RatingListItemBinding
 import com.example.garbagecollector.model.User
 import com.example.garbagecollector.util.recyclerview.RankingDiffUtil
 
+/*
+Adapter for Recycler View in RankingFragment
+ */
 class RankingListAdapter : RecyclerView.Adapter<RankingListAdapter.ViewHolder>() {
     private var userList = emptyList<User>()
 
@@ -19,6 +22,8 @@ class RankingListAdapter : RecyclerView.Adapter<RankingListAdapter.ViewHolder>()
         val locationItem = userList[position]
         holder.bind(locationItem)
     }
+
+    override fun getItemCount(): Int = userList.size
 
     class ViewHolder(private val binding: RatingListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -34,10 +39,6 @@ class RankingListAdapter : RecyclerView.Adapter<RankingListAdapter.ViewHolder>()
                 return ViewHolder(binding)
             }
         }
-    }
-
-    override fun getItemCount(): Int {
-        return userList.size
     }
 
     fun setData(list: List<User>) {

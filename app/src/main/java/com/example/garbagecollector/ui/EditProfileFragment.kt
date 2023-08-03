@@ -4,18 +4,17 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import com.example.garbagecollector.R
-import com.example.garbagecollector.databinding.NotificationsBinding
+import com.example.garbagecollector.databinding.FragmentEditProfileBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class NotificationsFragment : Fragment(R.layout.notifications) {
-
-    private var _binding: NotificationsBinding? = null
+class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
+    private var _binding: FragmentEditProfileBinding? = null
     private val binding get() = _binding!!
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = NotificationsBinding.bind(view)
+        _binding = FragmentEditProfileBinding.bind(view)
     }
 
     override fun onDestroy() {

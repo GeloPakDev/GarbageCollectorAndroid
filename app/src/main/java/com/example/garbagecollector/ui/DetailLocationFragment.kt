@@ -10,9 +10,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Base64
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
@@ -32,23 +30,16 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class DetailLocationFragment(private val marker: Marker) : BottomSheetDialogFragment() {
+class DetailLocationFragment(private val marker: Marker) : BottomSheetDialogFragment(R.layout.detail_location) {
 
     private val binding get() = _binding!!
     private var _binding: DetailLocationBinding? = null
     private val homeViewModel by viewModels<HomeViewModel>()
 
-    @SuppressLint("SetTextI18n", "NewApi")
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = DetailLocationBinding.inflate(inflater)
-        return binding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        _binding = DetailLocationBinding.bind(view)
         val locationId = marker.tag as Long
         readDatabase(locationId, binding)
 

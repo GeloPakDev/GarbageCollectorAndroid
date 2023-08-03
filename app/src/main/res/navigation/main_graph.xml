@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.garbagecollector.ui.HomeFragment"
+        android:label="home_fragment"
+        tools:layout="@layout/home" />
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.example.garbagecollector.ui.EditProfileFragment"
+        android:label="fragment_edit_profile"
+        tools:layout="@layout/fragment_edit_profile" />
+    <fragment
+        android:id="@+id/myRankingFragment"
+        android:name="com.example.garbagecollector.ui.MyRankingFragment"
+        android:label="fragment_my_ranking"
+        tools:layout="@layout/fragment_my_ranking" />
+    <fragment
+        android:id="@+id/myGarbageFragment"
+        android:name="com.example.garbagecollector.ui.MyGarbageFragment"
+        android:label="fragment_my_garbage"
+        tools:layout="@layout/fragment_my_garbage" />
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="com.example.garbagecollector.ui.SignInFragment"
+        android:label="SignInFragment"
+        tools:layout="@layout/fragment_signin" />
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.example.garbagecollector.ui.SignUpFragment"
+        android:label="fragment_sign_up"
+        tools:layout="@layout/fragment_sign_up" />
+
+</navigation>

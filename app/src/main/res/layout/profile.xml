@@ -19,66 +19,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-<!--    <com.facebook.shimmer.ShimmerFrameLayout-->
-<!--        android:id="@+id/shimmer"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="200dp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/profile">-->
-
-<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content">-->
-
-<!--            <androidx.cardview.widget.CardView-->
-<!--                android:id="@+id/shimmer_profile_photo"-->
-<!--                android:layout_width="80dp"-->
-<!--                android:layout_height="80dp"-->
-<!--                android:layout_centerHorizontal="true"-->
-<!--                android:layout_marginTop="30dp"-->
-<!--                android:elevation="12dp"-->
-<!--                android:innerRadius="0dp"-->
-<!--                android:shape="ring"-->
-<!--                android:thicknessRatio="1.9"-->
-<!--                app:cardCornerRadius="40dp"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="parent">-->
-
-<!--                <ImageView-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:background="#f5f4f3"-->
-<!--                    android:scaleType="centerCrop" />-->
-<!--            </androidx.cardview.widget.CardView>-->
-
-<!--            -->
-
-<!--            <ImageView-->
-<!--                android:id="@+id/shimmer_imageView"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="6dp"-->
-<!--                android:src="@drawable/edit"-->
-<!--                app:layout_constraintBottom_toBottomOf="@+id/shimmer_full_name"-->
-<!--                app:layout_constraintStart_toEndOf="@+id/shimmer_full_name"-->
-<!--                app:layout_constraintTop_toTopOf="@+id/shimmer_full_name" />-->
-
-<!--            <androidx.cardview.widget.CardView-->
-<!--                android:id="@+id/shimmer_address"-->
-<!--                android:layout_width="146dp"-->
-<!--                android:layout_height="21dp"-->
-<!--                android:layout_marginTop="6dp"-->
-<!--                app:cardBackgroundColor="#f5f4f3"-->
-<!--                app:cardCornerRadius="20dp"-->
-<!--                app:cardElevation="0dp"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/shimmer_full_name" />-->
-<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
-<!--    </com.facebook.shimmer.ShimmerFrameLayout>-->
-
     <androidx.cardview.widget.CardView
         android:id="@+id/profile_photo"
         android:layout_width="80dp"

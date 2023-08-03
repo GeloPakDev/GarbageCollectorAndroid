@@ -1,39 +1,41 @@
 package com.example.garbagecollector.ui
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
-import com.example.garbagecollector.databinding.ActivityMyGarbageBinding
+import com.example.garbagecollector.R
+import com.example.garbagecollector.databinding.FragmentMyGarbageBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MyGarbageActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMyGarbageBinding
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityMyGarbageBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+class MyGarbageFragment : Fragment(R.layout.fragment_my_garbage) {
+    private var _binding: FragmentMyGarbageBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentMyGarbageBinding.bind(view)
 
         val toolbar = binding.toolbar
         val viewPager = binding.tabViewpager
         val tabLayout = binding.tabTablayout
+
         binding.backButton.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
+            findNavController().popBackStack()
         }
 
-        setSupportActionBar(toolbar)
+        ((activity as AppCompatActivity).setSupportActionBar(toolbar))
         setupViewPager(viewPager)
         tabLayout.setupWithViewPager(viewPager)
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
-        val adapter = ViewPagerAdapter(supportFragmentManager)
+        val adapter = ViewPagerAdapter(childFragmentManager)
         // LoginFragment is the name of Fragment and the Login
         // is a title of tab
         adapter.addFragment(PostedGarbageFragment(), "Posted")
@@ -70,5 +72,10 @@ class MyGarbageActivity : AppCompatActivity() {
             fragmentList1.add(fragment)
             fragmentTitleList1.add(title)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

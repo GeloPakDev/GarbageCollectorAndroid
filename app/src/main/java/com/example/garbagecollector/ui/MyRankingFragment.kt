@@ -2,32 +2,39 @@ package com.example.garbagecollector.ui
 
 import android.graphics.Color
 import android.os.Bundle
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import com.example.garbagecollector.databinding.ActivityMyRankingBinding
+import androidx.fragment.app.Fragment
+import android.view.View
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.example.garbagecollector.R
+import com.example.garbagecollector.databinding.FragmentMyRankingBinding
 import com.example.garbagecollector.viewmodel.MyRankingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import org.eazegraph.lib.models.PieModel
 
-
 @AndroidEntryPoint
-class RankingActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMyRankingBinding
+class MyRankingFragment : Fragment(R.layout.fragment_my_ranking) {
+
+    private var _binding: FragmentMyRankingBinding? = null
+    private val binding get() = _binding!!
     private val myRankingViewModel by viewModels<MyRankingViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityMyRankingBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentMyRankingBinding.bind(view)
 
+        binding.backButton.setOnClickListener {
+            findNavController().popBackStack()
+        }
         myRankingViewModel.getData()
         setStatisticsData()
         setUpPieChart()
     }
 
+
     private fun setUpPieChart() {
         val pieChart = binding.piechart
-        myRankingViewModel.statistics.observe(this) {
+        myRankingViewModel.statistics.observe(viewLifecycleOwner) {
             pieChart.addPieSlice(
                 it["totalPoints"]?.toFloat()?.let { it1 ->
                     PieModel(
@@ -56,11 +63,16 @@ class RankingActivity : AppCompatActivity() {
     }
 
     private fun setStatisticsData() {
-        myRankingViewModel.statistics.observe(this) { statistics ->
+        myRankingViewModel.statistics.observe(viewLifecycleOwner) { statistics ->
             binding.userAllPoints.text = statistics["totalPoints"].toString()
             binding.claimedLocations.text = statistics["claimedLocations"].toString()
             binding.postedLocations.text = statistics["postedLocations"].toString()
             binding.durationPoints.text = statistics["totalPoints"].toString()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

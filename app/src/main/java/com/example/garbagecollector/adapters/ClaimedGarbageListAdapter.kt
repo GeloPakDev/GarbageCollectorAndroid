@@ -8,6 +8,9 @@ import com.example.garbagecollector.databinding.ClaimedGarbageListItemBinding
 import com.example.garbagecollector.repository.database.model.ClaimedLocation
 import com.example.garbagecollector.util.recyclerview.ClaimedLocationsDiffUtil
 
+/*
+Adapter for RecyclerView in ClaimedGarbageListFragment
+ */
 class ClaimedGarbageListAdapter : RecyclerView.Adapter<ClaimedGarbageListAdapter.ViewHolder>() {
 
     private var locationData = emptyList<ClaimedLocation>()
@@ -20,6 +23,8 @@ class ClaimedGarbageListAdapter : RecyclerView.Adapter<ClaimedGarbageListAdapter
         val locationItem = locationData[position]
         holder.bind(locationItem)
     }
+
+    override fun getItemCount(): Int = locationData.size
 
     class ViewHolder(private val binding: ClaimedGarbageListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -36,10 +41,6 @@ class ClaimedGarbageListAdapter : RecyclerView.Adapter<ClaimedGarbageListAdapter
                 return ViewHolder(binding)
             }
         }
-    }
-
-    override fun getItemCount(): Int {
-        return locationData.size
     }
 
     fun setData(list: List<ClaimedLocation>) {
