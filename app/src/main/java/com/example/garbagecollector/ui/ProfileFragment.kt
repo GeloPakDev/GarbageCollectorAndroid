@@ -12,17 +12,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.garbagecollector.R
 import com.example.garbagecollector.databinding.ProfileBinding
 import com.example.garbagecollector.util.findTopNavController
 import com.example.garbagecollector.viewmodel.ProfileViewModel
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment(R.layout.profile) {
@@ -38,6 +36,7 @@ class ProfileFragment : Fragment(R.layout.profile) {
 
     private val profileViewModel by viewModels<ProfileViewModel>()
 
+    private val firebaseAuth = FirebaseAuth.getInstance()
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -45,27 +44,13 @@ class ProfileFragment : Fragment(R.layout.profile) {
         savedInstanceState: Bundle?
     ): View? {
 
-        //Check if user signed in already
-        profileViewModel.token.observe(viewLifecycleOwner) { token ->
-            //If token is empty user is not signed in or registered yet
-            if (token.isEmpty()) {
-//                findNavController().navigate(R.id.notSignedInFragment)
-            } else {
-                //Get the email from the DataStore and find user by email
-                profileViewModel.email.observe(viewLifecycleOwner) { email ->
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        val user = profileViewModel.findUserByEmail(email)
-                        if (user.isSuccessful) {
-                            binding.fullName.text =
-                                "${user.body()?.data?.firstName} ${user.body()?.data?.lastName}"
-                        }
-                    }
-                }
-            }
-        }
-
         _binding = ProfileBinding.inflate(inflater)
-
+        //Check if user signed in already
+        if (firebaseAuth.currentUser == null) {
+            findNavController().navigate(R.id.notSignedInFragment)
+        } else {
+            binding.fullName.text = "${firebaseAuth.currentUser?.displayName}"
+        }
         //ListView setup
         val statisticsListView = binding.listViewStatistics
         val settingsListView = binding.listViewSettings
@@ -126,8 +111,7 @@ class ProfileFragment : Fragment(R.layout.profile) {
     private fun setOthersLitItemListener(listItemPosition: Int) {
         when (othersListViewAdapter?.getItem(listItemPosition).toString()) {
             "About App" -> {
-                val toast = Toast.makeText(requireContext(), "About App", Toast.LENGTH_SHORT)
-                toast.show()
+                findTopNavController().navigate(R.id.signUpFragment)
             }
             "Sign Out" -> {
                 showSuccessDialog()
@@ -143,8 +127,7 @@ class ProfileFragment : Fragment(R.layout.profile) {
         dialog.setContentView(R.layout.sign_out_dialog)
         val okButton = dialog.findViewById<AppCompatButton>(R.id.ok_button)
         okButton.setOnClickListener {
-            profileViewModel.signOut()
-            findNavController().navigate(R.id.homeFragment)
+            firebaseAuth.signOut()
             dialog.dismiss()
         }
         val cancelButton = dialog.findViewById<AppCompatButton>(R.id.cancel_button)

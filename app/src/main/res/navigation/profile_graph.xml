@@ -10,4 +10,8 @@
         android:name="com.example.garbagecollector.ui.ProfileFragment"
         android:label="profile"
         tools:layout="@layout/profile" />
+    <fragment
+        android:id="@+id/notSignedInFragment"
+        android:name="com.example.garbagecollector.ui.NotSignedInFragment"
+        android:label="NotSignedInFragment" />
 </navigation>

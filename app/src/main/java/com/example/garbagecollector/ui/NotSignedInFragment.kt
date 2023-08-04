@@ -1,6 +1,5 @@
 package com.example.garbagecollector.ui
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
@@ -11,6 +10,7 @@ import android.view.View
 import android.widget.TextView
 import com.example.garbagecollector.R
 import com.example.garbagecollector.databinding.NotSignedInBinding
+import com.example.garbagecollector.util.findTopNavController
 
 class NotSignedInFragment : Fragment(R.layout.not_signed_in) {
     private var _binding: NotSignedInBinding? = null
@@ -27,8 +27,7 @@ class NotSignedInFragment : Fragment(R.layout.not_signed_in) {
         val spannableString = SpannableString(text)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
-                val intent = Intent(activity, LoginActivity::class.java)
-                startActivity(intent)
+                findTopNavController().navigate(R.id.signInFragment)
             }
         }
         spannableString.setSpan(clickableSpan, 23, 30, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)

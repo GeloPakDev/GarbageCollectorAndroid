@@ -4,6 +4,7 @@ plugins {
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
     id 'org.jetbrains.kotlin.kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -40,8 +41,6 @@ android {
 }
 
 dependencies {
-
-    implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -79,6 +78,8 @@ dependencies {
     implementation 'com.nineoldandroids:library:2.4.0'
     //Leak Canary
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
+    //Firebase
+    implementation 'com.google.firebase:firebase-auth-ktx:21.1.0'
 
     kapt "androidx.hilt:hilt-compiler:1.0.0"
     testImplementation 'junit:junit:4.13.2'
