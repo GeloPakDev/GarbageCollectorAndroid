@@ -12,14 +12,14 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.example.garbagecollector.R
-import com.example.garbagecollector.databinding.HomeBinding
+import com.example.garbagecollector.databinding.FragmentHomeBinding
 import com.example.garbagecollector.util.Constants
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(R.layout.home) {
-    private var _binding: HomeBinding? = null
+class HomeFragment : Fragment(R.layout.fragment_home) {
+    private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
     //As soon as the photo has taken open PostLocationFragment
@@ -35,7 +35,7 @@ class HomeFragment : Fragment(R.layout.home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _binding = HomeBinding.bind(view)
+        _binding = FragmentHomeBinding.bind(view)
 
         val navHostFragment =
             childFragmentManager.findFragmentById(R.id.nav_host_home_fragment) as NavHostFragment
@@ -50,8 +50,8 @@ class HomeFragment : Fragment(R.layout.home) {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

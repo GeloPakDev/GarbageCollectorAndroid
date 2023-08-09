@@ -228,10 +228,10 @@ class MapHomeFragment : Fragment(R.layout.fragment_map_home), OnMapReadyCallback
     }
 
     private fun clearMap() {
-        if (::mapFragment.isInitialized) {
-            childFragmentManager.beginTransaction().remove(mapFragment).commitAllowingStateLoss()
+//        if (::mapFragment.isInitialized) {
+//            childFragmentManager.beginTransaction().remove(mapFragment).commitAllowingStateLoss()
             googleMap.clear()
-        }
+//        }
     }
 
 

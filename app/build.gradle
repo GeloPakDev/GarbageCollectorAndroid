@@ -56,6 +56,8 @@ dependencies {
     implementation "androidx.room:room-runtime:2.5.0"
     implementation 'androidx.annotation:annotation:1.6.0'
     implementation 'androidx.room:room-ktx:2.5.0'
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.7.0'
+    implementation 'com.google.firebase:firebase-storage-ktx:20.2.1'
     kapt "androidx.room:room-compiler:2.5.0"
     //Data Store
     implementation "androidx.datastore:datastore-preferences:1.1.0-alpha03"

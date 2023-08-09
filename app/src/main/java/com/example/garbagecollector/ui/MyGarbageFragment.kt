@@ -74,8 +74,8 @@ class MyGarbageFragment : Fragment(R.layout.fragment_my_garbage) {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

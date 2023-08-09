@@ -61,8 +61,8 @@ class RankingFragment : Fragment(R.layout.ranking) {
         binding.recyclerview.addItemDecoration(itemDecoration)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

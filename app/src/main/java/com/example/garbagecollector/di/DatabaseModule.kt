@@ -34,7 +34,8 @@ class DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideClaimedLocationDao(database: GarbageCollectorDatabase) = database.claimedLocationDao()
+    fun provideClaimedLocationDao(database: GarbageCollectorDatabase) =
+        database.claimedLocationDao()
 
     @Singleton
     @Provides

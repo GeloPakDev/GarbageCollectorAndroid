@@ -102,8 +102,8 @@ class PostedGarbageFragment : Fragment(R.layout.fragment_posted_garbage) {
         binding.recyclerview.adapter = postedGarbageListAdapter
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

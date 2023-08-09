@@ -17,8 +17,8 @@ class EditProfileFragment : Fragment(R.layout.fragment_edit_profile) {
         _binding = FragmentEditProfileBinding.bind(view)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

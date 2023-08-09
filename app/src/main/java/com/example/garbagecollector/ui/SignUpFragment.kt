@@ -1,18 +1,20 @@
 package com.example.garbagecollector.ui
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.text.method.HideReturnsTransformationMethod
-import android.text.method.PasswordTransformationMethod
-import android.view.MotionEvent
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Toast
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.garbagecollector.R
 import com.example.garbagecollector.databinding.FragmentSignUpBinding
-import com.google.firebase.auth.FirebaseAuth
+import com.example.garbagecollector.repository.web.SignUpCallback
+import com.example.garbagecollector.util.setHideShowPassword
+import com.example.garbagecollector.viewmodel.AuthenticationViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
@@ -20,87 +22,63 @@ class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
     private var _binding: FragmentSignUpBinding? = null
     private val binding get() = _binding!!
 
-    @SuppressLint("ClickableViewAccessibility")
+    private val viewModel by viewModels<AuthenticationViewModel>()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentSignUpBinding.bind(view)
 
+        val firstName = binding.firstName
+        val lastName = binding.lastName
+        val email = binding.email
         val password = binding.password
         val signIn = binding.signIn
         val signUp = binding.signUp
-        var passwordVisible = true
-        password.setOnTouchListener { _, event ->
-            val right = 2
-            if (event.action == MotionEvent.ACTION_UP) {
-                if (event.rawX >= password.right - password.compoundDrawables[right].bounds.width()) { // your action here
-                    val selection = password.selectionEnd
-                    if (passwordVisible) {
-                        password.setCompoundDrawablesWithIntrinsicBounds(
-                            0,
-                            0,
-                            R.drawable.closed_eye,
-                            0
-                        )
-                        password.transformationMethod = PasswordTransformationMethod.getInstance()
-                        passwordVisible = false
-                    } else {
-                        password.setCompoundDrawablesWithIntrinsicBounds(
-                            0,
-                            0,
-                            R.drawable.open_eye,
-                            0
-                        )
-                        password.transformationMethod =
-                            HideReturnsTransformationMethod.getInstance()
-                        passwordVisible = true
-                    }
-                    password.setSelection(selection)
-                    return@setOnTouchListener true
-                }
-            }
-            return@setOnTouchListener false
-        }
+
+        setHideShowPassword(password)
+
         signIn.setOnClickListener {
             findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
         }
         signUp.setOnClickListener {
-            registerUser(
-                binding.firstName.text.toString(),
-                binding.lastName.text.toString(),
-                binding.email.text.toString(),
-                binding.password.text.toString()
-            )
+            if (firstName.text.toString().isEmpty() ||
+                lastName.text.toString().isEmpty() ||
+                email.text.toString().isEmpty() ||
+                password.text.toString().isEmpty()
+            ) {
+                Toast.makeText(requireContext(), "Please fill all the fields", Toast.LENGTH_SHORT)
+                    .show()
+                return@setOnClickListener
+            } else {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    viewModel.signUp(
+                        binding.firstName.text.toString(),
+                        binding.lastName.text.toString(),
+                        binding.email.text.toString(),
+                        binding.password.text.toString(),
+                        object : SignUpCallback {
+                            override fun onSignUpComplete(successful: Boolean) {
+                                if (successful) {
+                                    findNavController().navigate(
+                                        R.id.action_signUpFragment_to_signInFragment,
+                                        null,
+                                        NavOptions.Builder()
+                                            .setPopUpTo(R.id.signUpFragment, true)
+                                            .build()
+                                    )
+                                } else {
+                                    Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+                    )
+                }
+            }
         }
     }
 
-    private fun registerUser(firstName: String, lastName: String, email: String, password: String) {
-        val firebaseAuth = FirebaseAuth.getInstance()
-        firebaseAuth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val firebaseUser = firebaseAuth.currentUser
-                    val userId = firebaseUser!!.uid
-                    Toast.makeText(context, "Account created$userId", Toast.LENGTH_SHORT).show()
-                    findNavController().popBackStack()
-                    findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
-
-                    //val databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userId)
-                    //val hashMap = HashMap<String, String>()
-                    //hashMap["userId"] = userId
-                    //hashMap["firstName"] = firstName
-                    //hashMap["lastName"] = lastName
-                    //hashMap["email"] = email
-                    //databaseReference.setValue(hashMap).addOnCompleteListener { task ->
-                    //    if (task.isSuccessful) {
-                    //        findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
-                    //    }
-                    //}
-                }
-            }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

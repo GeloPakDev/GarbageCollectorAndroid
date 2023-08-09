@@ -2,7 +2,6 @@ package com.example.garbagecollector.ui
 
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -14,17 +13,19 @@ import android.view.Window
 import android.widget.ArrayAdapter
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.garbagecollector.R
-import com.example.garbagecollector.databinding.ProfileBinding
+import com.example.garbagecollector.databinding.FragmentProfileBinding
 import com.example.garbagecollector.util.findTopNavController
 import com.example.garbagecollector.viewmodel.ProfileViewModel
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class ProfileFragment : Fragment(R.layout.profile) {
-    private var _binding: ProfileBinding? = null
+class ProfileFragment : Fragment(R.layout.fragment_profile) {
+    private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
     private val statistics = listOf("My Garbage", "Ranking")
@@ -34,22 +35,27 @@ class ProfileFragment : Fragment(R.layout.profile) {
     private var settingsListViewAdapter: ArrayAdapter<String>? = null
     private var othersListViewAdapter: ArrayAdapter<String>? = null
 
-    private val profileViewModel by viewModels<ProfileViewModel>()
-
-    private val firebaseAuth = FirebaseAuth.getInstance()
+    private val viewModel by viewModels<ProfileViewModel>()
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
-        _binding = ProfileBinding.inflate(inflater)
+        _binding = FragmentProfileBinding.inflate(inflater, container, false)
         //Check if user signed in already
-        if (firebaseAuth.currentUser == null) {
+        val user = viewModel.getAuthInstance().currentUser
+        if (user == null) {
             findNavController().navigate(R.id.notSignedInFragment)
         } else {
-            binding.fullName.text = "${firebaseAuth.currentUser?.displayName}"
+            viewLifecycleOwner.lifecycleScope.launch {
+                val userDetails = viewModel.getUserDetails(user.uid)
+                userDetails?.let {
+                    binding.fullName.text = "${it.firstName} ${it.lastName}"
+                    binding.address.text = "${it.city}, ${it.district}"
+                }
+            }
         }
         //ListView setup
         val statisticsListView = binding.listViewStatistics
@@ -81,10 +87,7 @@ class ProfileFragment : Fragment(R.layout.profile) {
             setOthersLitItemListener(position)
         }
 
-        binding.edit.setOnClickListener {
-            val intent = Intent(activity, ProfileEditActivity::class.java)
-            startActivity(intent)
-        }
+        binding.edit.setOnClickListener {}
 
         return binding.root
 
@@ -127,7 +130,14 @@ class ProfileFragment : Fragment(R.layout.profile) {
         dialog.setContentView(R.layout.sign_out_dialog)
         val okButton = dialog.findViewById<AppCompatButton>(R.id.ok_button)
         okButton.setOnClickListener {
-            firebaseAuth.signOut()
+            viewModel.signOut()
+            findTopNavController().navigate(
+                R.id.homeFragment,
+                null,
+                NavOptions.Builder()
+                    .setPopUpTo(R.id.profileFragment, true)
+                    .build()
+            )
             dialog.dismiss()
         }
         val cancelButton = dialog.findViewById<AppCompatButton>(R.id.cancel_button)
@@ -137,8 +147,8 @@ class ProfileFragment : Fragment(R.layout.profile) {
         dialog.show()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

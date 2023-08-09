@@ -100,8 +100,8 @@ class ClaimedGarbageFragment : Fragment(R.layout.fragment_claimed_garbage) {
         binding.recyclerview.adapter = claimedGarbageListAdapter
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

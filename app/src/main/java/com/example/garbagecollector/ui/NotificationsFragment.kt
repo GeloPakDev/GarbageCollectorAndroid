@@ -18,8 +18,8 @@ class NotificationsFragment : Fragment(R.layout.notifications) {
         _binding = NotificationsBinding.bind(view)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

@@ -35,8 +35,8 @@ class NotSignedInFragment : Fragment(R.layout.not_signed_in) {
         binding.notSignIn.movementMethod = LinkMovementMethod.getInstance()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

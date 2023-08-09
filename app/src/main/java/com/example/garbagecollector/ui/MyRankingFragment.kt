@@ -71,8 +71,8 @@ class MyRankingFragment : Fragment(R.layout.fragment_my_ranking) {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }
