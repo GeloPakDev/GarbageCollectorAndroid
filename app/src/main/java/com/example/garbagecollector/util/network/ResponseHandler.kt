@@ -1,8 +1,10 @@
 package com.example.garbagecollector.util.network
 
 import com.example.garbagecollector.model.User
+import com.example.garbagecollector.repository.web.FirebaseResponse
 import com.example.garbagecollector.repository.web.NetworkResult
 import com.example.garbagecollector.repository.web.dto.Location
+import com.example.garbagecollector.repository.web.dto.LocationResponseDto
 import retrofit2.Response
 
 class ResponseHandler {
@@ -27,6 +29,19 @@ class ResponseHandler {
                 }
             }
         }
+
+        fun handleLocationsResponse(response: FirebaseResponse<List<LocationResponseDto>>): NetworkResult<List<LocationResponseDto>> {
+            return when (response) {
+                is FirebaseResponse.Success -> {
+                    val locations = response.data
+                    NetworkResult.Success(locations)
+                }
+                is FirebaseResponse.Error -> {
+                    NetworkResult.Error("Failed to fetch locations count", null)
+                }
+            }
+        }
+
         fun handleUsersResponse(response: Response<List<User>>): NetworkResult<List<User>> {
             when {
                 response.message().toString().contains("timeout") -> {
@@ -65,6 +80,18 @@ class ResponseHandler {
                 }
                 else -> {
                     return NetworkResult.Error(response.message())
+                }
+            }
+        }
+
+        fun handlePostedLocationsNumberResponse(response: FirebaseResponse<Int>): NetworkResult<Int> {
+            return when (response) {
+                is FirebaseResponse.Success -> {
+                    val locations = response.data
+                    NetworkResult.Success(locations)
+                }
+                is FirebaseResponse.Error -> {
+                    NetworkResult.Error("Failed to fetch locations count", null)
                 }
             }
         }

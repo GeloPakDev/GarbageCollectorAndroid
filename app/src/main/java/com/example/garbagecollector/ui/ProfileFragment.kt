@@ -62,6 +62,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         val settingsListView = binding.listViewSettings
         val othersListView = binding.listViewOthers
 
+        binding.edit.rootView.setOnClickListener {
+            findTopNavController().navigate(R.id.editProfileFragment)
+        }
+
         statisticsListViewAdapter =
             activity?.let { ArrayAdapter(it, R.layout.list_view_item, statistics) }
 

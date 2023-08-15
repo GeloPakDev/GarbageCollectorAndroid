@@ -16,7 +16,7 @@ import com.example.garbagecollector.repository.database.model.PostedLocation
 
 @Database(
     entities = [Location::class, ClaimedLocation::class, PostedLocation::class, LocalLocation::class],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 @TypeConverters(

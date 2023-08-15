@@ -15,5 +15,5 @@ interface LocalLocationDao {
     fun findAllLocalLocations(): List<LocalLocation>
 
     @Query("DELETE FROM local_location WHERE id = :id")
-    fun deleteLocalLocationById(id: Long)
+    fun deleteLocalLocationById(id: String)
 }

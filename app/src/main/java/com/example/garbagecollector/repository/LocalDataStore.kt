@@ -56,7 +56,7 @@ class LocalDataStore @Inject constructor(
         locationDao.deleteLocationById(id)
     }
 
-    fun deleteLocalLocationById(id: Long) {
-        localLocationDao.deleteLocalLocationById(id)
-    }
+//    fun deleteLocalLocationById(id: Long) {
+//        localLocationDao.deleteLocalLocationById(id)
+//    }
 }

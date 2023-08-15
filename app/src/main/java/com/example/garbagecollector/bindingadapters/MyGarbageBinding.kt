@@ -1,9 +1,7 @@
 package com.example.garbagecollector.bindingadapters
 
 import android.annotation.SuppressLint
-import android.graphics.BitmapFactory
 import android.os.Build
-import android.util.Base64
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -11,16 +9,14 @@ import androidx.databinding.BindingAdapter
 import com.example.garbagecollector.repository.database.model.ClaimedLocation
 import com.example.garbagecollector.repository.database.model.PostedLocation
 import com.example.garbagecollector.util.DateFormatter
+import com.squareup.picasso.Picasso
 
 class MyGarbageBinding {
     companion object {
         @BindingAdapter("setImageFromString")
         @JvmStatic
         fun setImageFromString(imageView: ImageView, image: String) {
-            val byteArray = Base64.decode(image, Base64.DEFAULT)
-            //Decode to Bitmap to set it
-            val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-            imageView.setImageBitmap(bitmap)
+            Picasso.get().load(image).into(imageView)
         }
 
         @RequiresApi(Build.VERSION_CODES.O)

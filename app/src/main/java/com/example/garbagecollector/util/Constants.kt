@@ -7,6 +7,7 @@ class Constants {
         const val LOCATION = "LatLng"
         const val DATASTORE_NAME = "AUTHORIZATION"
         const val BASE_URL = "https://garabagecollectorapp.azurewebsites.net"
+        const val MARKER_ID = "marker_id"
 
         //Database
         const val LOCAL_LOCATION_TABLE_NAME = "local_location"

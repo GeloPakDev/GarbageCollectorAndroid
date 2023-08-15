@@ -18,6 +18,10 @@ class ProfileViewModel @Inject constructor(
 
     fun getAuthInstance() = repository.getAuthInstance()
     suspend fun getUserDetails(uid: String): ProfileDto? = repository.getUserDetails(uid)
+    suspend fun updateUserDetails(userId: String, email: String, city: String, district: String) {
+        val updateUserDto = UpdateUserDto(userId, email, city, district)
+        repository.updateUserDetails(updateUserDto)
+    }
 
     fun signOut() {
         viewModelScope.launch(Dispatchers.IO) {

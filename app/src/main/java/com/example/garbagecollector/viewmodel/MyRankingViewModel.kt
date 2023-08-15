@@ -3,43 +3,36 @@ package com.example.garbagecollector.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.garbagecollector.repository.Repository
-import com.example.garbagecollector.repository.local.DataStoreManager
+import com.example.garbagecollector.repository.web.LocationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class MyRankingViewModel @Inject constructor(
-    private val repository: Repository,
+    private val locationRepository: LocationRepository,
     application: Application
 ) :
     AndroidViewModel(application) {
-    //Data Store
-    private val dataStoreManager = DataStoreManager(application)
-    val token = dataStoreManager.userTokenFlow.asLiveData()
 
     var statistics = MutableLiveData<Map<String, Int>>()
 
     private suspend fun getTotalPostedLocations(): Int = withContext(Dispatchers.IO) {
-        val userId = runBlocking { dataStoreManager.userId.first() }
-        repository.remoteDataSource.getTotalPostedUserLocations(userId)
+        val userId = locationRepository.getAuthInstance().currentUser!!.uid
+        locationRepository.getTotalPostedUserLocations(userId)
     }
 
     private suspend fun getTotalClaimedLocations(): Int = withContext(Dispatchers.IO) {
-        val userId = runBlocking { dataStoreManager.userId.first() }
-        repository.remoteDataSource.getTotalClaimedUserLocations(userId)
+        val userId = locationRepository.getAuthInstance().currentUser!!.uid
+        locationRepository.getTotalClaimedUserLocations(userId)
     }
 
     private suspend fun getUserPoints(): Int = withContext(Dispatchers.IO) {
-        val userId = runBlocking { dataStoreManager.userId.first() }
-        repository.remoteDataSource.getUserPoints(userId)
+        val userId = locationRepository.getAuthInstance().currentUser!!.uid
+        locationRepository.getUserPoints(userId)
     }
 
     fun getData() {

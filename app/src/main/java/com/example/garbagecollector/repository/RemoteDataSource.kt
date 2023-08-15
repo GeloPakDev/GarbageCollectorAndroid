@@ -36,11 +36,11 @@ class RemoteDataSource @Inject constructor(
         return locationApi.getTotalClaimedUserLocations(userId)
     }
 
-    suspend fun getClaimedUserLocations(userId: Long): Response<List<LocationDto>> {
+    suspend fun getClaimedUserLocations(userId: Long): Response<List<LocationRequestDto>> {
         return locationApi.getClaimedUserLocations(userId)
     }
 
-    suspend fun getPostedUserLocations(userId: Long): Response<List<LocationDto>> {
+    suspend fun getPostedUserLocations(userId: Long): Response<List<LocationRequestDto>> {
         return locationApi.getPostedUserLocations(userId)
     }
 
@@ -53,7 +53,7 @@ class RemoteDataSource @Inject constructor(
     }
 
     //POST METHODS
-    suspend fun postLocation(location: LocationDto): LocationDto {
+    suspend fun postLocation(location: LocationRequestDto): LocationRequestDto {
         return locationApi.postLocation(location)
     }
 

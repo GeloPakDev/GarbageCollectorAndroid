@@ -12,18 +12,18 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.Window
 import android.widget.Button
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.app.ActivityCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.garbagecollector.R
-import com.example.garbagecollector.mapper.LocationsMapper
 import com.example.garbagecollector.repository.web.NetworkResult
-import com.example.garbagecollector.repository.web.dto.Location
+import com.example.garbagecollector.repository.web.dto.LocationResponseDto
 import com.example.garbagecollector.util.Constants
-import com.example.garbagecollector.viewmodel.HomeViewModel
+import com.example.garbagecollector.util.findTopNavController
+import com.example.garbagecollector.viewmodel.LocationViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -40,11 +40,12 @@ import kotlinx.coroutines.launch
 class MapHomeFragment : Fragment(R.layout.fragment_map_home), OnMapReadyCallback {
     //To control and query the map
     private lateinit var googleMap: GoogleMap
-    private lateinit var mapFragment: SupportMapFragment
 
     //To get current User's location
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private val homeViewModel by viewModels<HomeViewModel>()
+
+    //ViewModel
+    private val locationsViewModel by viewModels<LocationViewModel>()
 
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -58,19 +59,19 @@ class MapHomeFragment : Fragment(R.layout.fragment_map_home), OnMapReadyCallback
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        mapFragment = childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
+        val mapFragment = childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
         //set up the map and create Google Map object
         mapFragment.getMapAsync(this)
         setupLocationClient()
-
     }
+
     //Initialization methods
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
         //Get the User's location
         getCurrentLocation()
         //Observe for Location changes
-        readDatabase()
+        requestApiData()
         //Listener for Markers on the map
         showDetailLocation(googleMap)
     }
@@ -112,7 +113,7 @@ class MapHomeFragment : Fragment(R.layout.fragment_map_home), OnMapReadyCallback
         requestPermissionLauncher.launch(ACCESS_FINE_LOCATION)
     }
 
-    private fun displayAllMarkers(markers: List<Location>?) {
+    private fun displayAllMarkers(markers: List<LocationResponseDto>?) {
         viewLifecycleOwner.lifecycleScope.launch {
             //Locate all new markers on the map
             markers?.forEach {
@@ -123,51 +124,15 @@ class MapHomeFragment : Fragment(R.layout.fragment_map_home), OnMapReadyCallback
         }
     }
 
-    private fun readDatabase() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            //Send request to check if it there is new data available
-            homeViewModel.getTotalPostedLocations()
-            homeViewModel.remoteTotalLocationsNumber.observe(viewLifecycleOwner) { remote ->
-                //Clear all existing markers from the map before retrieving new one
-                when (remote) {
-                    is NetworkResult.Success -> {
-                        homeViewModel.getAllLocalLocations()
-                        homeViewModel.postedLocalLocations.observe(viewLifecycleOwner) { local ->
-                            if (remote.data!! > local.size) {
-                                displayAllMarkers(LocationsMapper.mapLocalLocationToLocation(local))
-                                setupSnackBar()
-                            } else if (local.isNotEmpty()) {
-                                displayAllMarkers(LocationsMapper.mapLocalLocationToLocation(local))
-                            } else if (remote.data == 0) {
-                                //display it on the screen
-                                Toast.makeText(
-                                    requireContext(), "You didn't post any garbage yet",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            } else {
-                                requestApiData()
-                            }
-                        }
-                    }
-                    is NetworkResult.Error -> {
-                        if (remote.message.toString() == "No Internet Connection.") {
-                            showNetworkIssueDialog()
-                        }
-                    }
-                    is NetworkResult.Loading -> {}
-                }
-            }
-        }
-    }
-
     private fun requestApiData() {
         //Observe for the markers from the Server
-        homeViewModel.getAllLiveLocations()
-        homeViewModel.remoteLocations.observe(viewLifecycleOwner) { response ->
+        locationsViewModel.getAllLiveLocations()
+        locationsViewModel.remoteLocations.observe(viewLifecycleOwner) { response ->
             //Clear all existing markers from the map before retrieving new one
             googleMap.clear()
             when (response) {
                 is NetworkResult.Success -> {
+                    Log.d("requestApiData: ", response.data.toString())
                     //add method to show dismiss the dialog of loading the icons
                     displayAllMarkers(response.data)
                 }
@@ -186,8 +151,10 @@ class MapHomeFragment : Fragment(R.layout.fragment_map_home), OnMapReadyCallback
     private fun showDetailLocation(googleMap: GoogleMap) {
         viewLifecycleOwner.lifecycleScope.launch {
             googleMap.setOnMarkerClickListener {
-                val detailLocationFragment = DetailLocationFragment(it)
-                detailLocationFragment.show(parentFragmentManager, "TAG")
+                findTopNavController().navigate(
+                    R.id.action_homeFragment_to_detailLocationFragment,
+                    bundleOf(Constants.MARKER_ID to it.tag)
+                )
                 false
             }
         }
@@ -228,12 +195,8 @@ class MapHomeFragment : Fragment(R.layout.fragment_map_home), OnMapReadyCallback
     }
 
     private fun clearMap() {
-//        if (::mapFragment.isInitialized) {
-//            childFragmentManager.beginTransaction().remove(mapFragment).commitAllowingStateLoss()
-            googleMap.clear()
-//        }
+        googleMap.clear()
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

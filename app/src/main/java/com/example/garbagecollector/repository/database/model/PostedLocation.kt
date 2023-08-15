@@ -6,8 +6,8 @@ import com.example.garbagecollector.util.Constants
 
 @Entity(tableName = Constants.POSTED_LOCATION_TABLE_NAME)
 data class PostedLocation(
-    @PrimaryKey(autoGenerate = true)
-    var id: Long? = null,
+    @PrimaryKey
+    var id: String = "",
     var name: String? = "",
     var city: String? = "",
     var postalCode: Int? = 0,

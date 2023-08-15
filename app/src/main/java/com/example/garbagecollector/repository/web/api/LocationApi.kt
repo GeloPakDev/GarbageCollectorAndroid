@@ -1,7 +1,7 @@
 package com.example.garbagecollector.repository.web.api
 
 import com.example.garbagecollector.repository.web.dto.Location
-import com.example.garbagecollector.repository.web.dto.LocationDto
+import com.example.garbagecollector.repository.web.dto.LocationRequestDto
 import com.example.garbagecollector.repository.web.dto.SingleLocationDto
 import retrofit2.Response
 import retrofit2.http.Body
@@ -25,13 +25,13 @@ interface LocationApi {
     suspend fun getTotalClaimedUserLocations(@Query("userId") userId: Long): Int
 
     @POST("api/locations")
-    suspend fun postLocation(@Body location: LocationDto): LocationDto
+    suspend fun postLocation(@Body location: LocationRequestDto): LocationRequestDto
 
     @GET("api/locations/claimed")
-    suspend fun getClaimedUserLocations(@Query("userId") userId: Long): Response<List<LocationDto>>
+    suspend fun getClaimedUserLocations(@Query("userId") userId: Long): Response<List<LocationRequestDto>>
 
     @GET("api/locations/posted")
-    suspend fun getPostedUserLocations(@Query("userId") userId: Long): Response<List<LocationDto>>
+    suspend fun getPostedUserLocations(@Query("userId") userId: Long): Response<List<LocationRequestDto>>
 
     @PATCH("api/locations")
     suspend fun claimLocation(

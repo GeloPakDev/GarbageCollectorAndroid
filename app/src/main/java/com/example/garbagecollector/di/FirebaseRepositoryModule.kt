@@ -1,8 +1,10 @@
 package com.example.garbagecollector.di
 
 import com.example.garbagecollector.repository.web.AuthRepository
+import com.example.garbagecollector.repository.web.LocationRepository
 import com.example.garbagecollector.repository.web.UserRepository
 import com.example.garbagecollector.repository.web.impl.AuthRepositoryImpl
+import com.example.garbagecollector.repository.web.impl.LocationRepositoryImpl
 import com.example.garbagecollector.repository.web.impl.UserRepositoryImpl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -35,5 +37,15 @@ class FirebaseRepositoryModule {
         storage: FirebaseStorage
     ): UserRepository {
         return UserRepositoryImpl(database, fireStore, storage)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocationRepository(
+        database: FirebaseAuth,
+        fireStore: FirebaseFirestore,
+        storage: FirebaseStorage
+    ): LocationRepository {
+        return LocationRepositoryImpl(database, fireStore, storage)
     }
 }
